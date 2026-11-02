@@ -57,15 +57,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-famil
 </style>
 </head>
 <body>
-<div id="load"><div class="spin"></div><div style="color:#0ff">Loading Cyberpunk Playa v2…</div><div style="color:#668;font-size:.75rem">Awesome graphics · Physics · Multi-platform</div></div>
+<div id="load"><div class="spin"></div><div style="color:#0ff">Loading Cyberpunk Plaza LIT…</div><div style="color:#668;font-size:.75rem">Awesome graphics · Physics · Multi-platform</div></div>
 <div id="title">
-  <h1>CYBERPUNK BURNING MAN</h1>
-  <p class="sub">Black Rock City 2077 — Playable neon festival world<br>
-  Collect · Mount the cyber car · Defend The Man · The Burn<br>
-  Efficient WebGL · Works on desktop, tablet & phone</p>
+  <h1>CYBERPUNK PLAZA — LIT</h1>
+  <p class="sub">Black Rock City 2077 — Tutorial-look neon festival<br>
+  Collect · Cyber car · Defend the wireframe Man · The Burn<br>
+  New lit Man · HD cyber Dragon & Panda · Xbox ready</p>
   <div class="chars">
-    <div class="card" data-c="dragon"><img src="../assets/dragon.png" alt="Dragon"><h3>🐉 DRAGON</h3><p>Fly · Frost · Aerial</p></div>
-    <div class="card" data-c="panda"><img src="../assets/panda.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Drive · Suppress · Armor</p></div>
+    <div class="card" data-c="dragon"><img src="../assets/dragon_v3.png" alt="Dragon"><h3>🐉 DRAGON</h3><p>Fly · Frost · Aerial</p></div>
+    <div class="card" data-c="panda"><img src="../assets/panda_v3.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Drive · Suppress · Armor</p></div>
   </div>
   <button id="go" disabled>ENTER THE PLAYA</button>
   <p style="margin-top:10px"><a href="../index.html" style="color:#0ff">← Dragon & Panda Hub</a></p>
@@ -147,7 +147,7 @@ function loadTex(url){
 async function init(){
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x030012);
-  scene.fog = new THREE.FogExp2(0x0a0028, IS_MOBILE ? 0.007 : 0.005);
+  scene.fog = new THREE.FogExp2(0x0c0035, IS_MOBILE ? 0.0065 : 0.0045);
 
   camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 800);
   camera.position.set(0,1.7,24);
@@ -156,13 +156,13 @@ async function init(){
   renderer.setSize(innerWidth, innerHeight);
   renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PR));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.32;
 
   // Lights
   scene.add(new THREE.AmbientLight(0x1a1040, 0.55));
   const moon = new THREE.DirectionalLight(0x6688ff, 0.6); moon.position.set(-40,80,-20); scene.add(moon);
   const fill = new THREE.DirectionalLight(0xff44aa, 0.2); fill.position.set(30,40,40); scene.add(fill);
-  for(let i=0;i<(IS_MOBILE?8:14);i++){
+  for(let i=0;i<(IS_MOBILE?10:18);i++){
     const l=new THREE.PointLight(NEON[i%7], 2.4, 42, 1.6);
     const a=(i/14)*Math.PI*2, r=16+Math.random()*48;
     l.position.set(Math.cos(a)*r, 2+Math.random()*6, Math.sin(a)*r);
@@ -196,8 +196,8 @@ async function init(){
   head.position.y=20.5; theMan.add(head);
   for(const s of[-1,1]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.9,7.5,.9),new THREE.MeshStandardMaterial({color:0x00ffaa,emissive:0x003322,emissiveIntensity:.65,metalness:.8}));arm.position.set(s*3,12.5,0);arm.rotation.z=s*.28;theMan.add(arm)}
   for(let i=0;i<5;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(6+i*1.7,.11,8,48),new THREE.MeshBasicMaterial({color:NEON[i%7],transparent:true,opacity:.75,blending:THREE.AdditiveBlending}));ring.position.y=2.5+i*3.2;ring.rotation.x=Math.PI/2;theMan.add(ring)}
-  theMan.add(new THREE.PointLight(0xff00ff,11,70)).position.y=13;
-  theMan.add(new THREE.PointLight(0x00ffff,6,45)).position.set(0,21,0);
+  theMan.add(new THREE.PointLight(0xff00ff,14,75)).position.y=13;
+  theMan.add(new THREE.PointLight(0x00ffff,8,50)).position.set(0,21,0);
   theMan.position.set(0,1,0); scene.add(theMan); installations.push(theMan);
 
   // Fiber forest
@@ -245,9 +245,16 @@ async function init(){
   });
 
   // Load key textures
-  textures.dragon = await loadTex(ASSETS+'dragon.png');
-  textures.panda  = await loadTex(ASSETS+'panda.png');
+  textures.dragon = await loadTex(ASSETS+'dragon_v3.png');
+  textures.panda  = await loadTex(ASSETS+'panda_v3.png');
   textures.car    = await loadTex(ASSETS+'car.png');
+  textures.manSpr = await loadTex(ASSETS+'the_man_sprite.png');
+  textures.droneMount = await loadTex(ASSETS+'drone_mount.png');
+  // Attach LIT Man after textures ready
+  if(textures.manSpr && theMan){
+    const manS=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.manSpr,transparent:true,alphaTest:.06,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.92}));
+    manS.scale.set(12,22,1); manS.position.y=12; manS.userData={manGlow:true}; theMan.add(manS);
+  }
   for(const n of ['npc_shaman','npc_fox','npc_pilot','npc_engineer','npc_monk','npc_scribe','item_shard','item_spark','fire_patch','rogue_drone','suppress_drone','frost_breath','zpeg']){
     textures[n] = await loadTex(ASSETS+n+'.png');
   }
@@ -347,7 +354,7 @@ function setChar(c){
   if(pMesh){player.remove(pMesh); pMesh.material.dispose()}
   const tex = c==='dragon' ? textures.dragon : textures.panda;
   pMesh = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true, alphaTest:.08, depthWrite:false}));
-  pMesh.scale.set(c==='dragon'?2.3:2.0, c==='dragon'?3.4:3.1, 1);
+  pMesh.scale.set(c==='dragon'?2.7:2.4, c==='dragon'?4.0:3.6, 1);
   pMesh.position.y=1.65; player.add(pMesh);
   document.getElementById('aname').textContent = c==='dragon' ? 'DRAGON' : 'CYBER PANDA';
 }
