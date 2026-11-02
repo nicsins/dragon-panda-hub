@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0020">
+<title>Dragon & Panda — Drone Arena / Void Shooter</title>
+<link rel="stylesheet" href="../css/hub.css">
+<script src="../js/controls.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#020010;font-family:system-ui,sans-serif;color:#0ff;touch-action:none}
+#c{position:fixed;inset:0;display:block}
+#ui{position:fixed;inset:0;pointer-events:none;z-index:10;display:none;flex-direction:column}
+#hud{padding:max(10px,env(safe-area-inset-top)) 12px 0;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent)}
+.box{background:rgba(0,12,30,.9);border:1px solid #0ff5;border-radius:10px;padding:7px 11px;backdrop-filter:blur(8px);box-shadow:0 0 16px #0ff3;pointer-events:auto;font-size:.8rem}
+#title{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 35%,#140038 0%,#000 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;pointer-events:auto}
+#title h1{font-size:clamp(1.5rem,5vw,2.6rem);background:linear-gradient(90deg,#f0f,#0ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center}
+#title .sub{color:#9cf;font-size:.88rem;text-align:center;max-width:520px;margin:8px 0 16px;line-height:1.4}
+.chars{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.card{width:min(170px,42vw);cursor:pointer;text-align:center;background:rgba(0,20,45,.7);border:2px solid #0ff5;border-radius:14px;padding:10px;transition:transform .25s,box-shadow .25s}
+.card:hover,.card.on{transform:scale(1.06);border-color:#f0f;box-shadow:0 0 40px #f0f8}
+.card img{width:100%;height:180px;object-fit:contain;border-radius:8px;background:#0a0520}
+.card h3{margin-top:8px;color:#0ff}
+#go{margin-top:14px;padding:12px 32px;font-size:1rem;font-weight:700;background:linear-gradient(90deg,#f0f,#0ff);color:#000;border:none;border-radius:50px;cursor:pointer}
+#go:disabled{opacity:.35}
+#load{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.spin{width:48px;height:48px;border:3px solid #0ff3;border-top-color:#f0f;border-radius:50%;animation:s .85s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+#toast{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(0,25,55,.95);border:1px solid #0ff;padding:9px 16px;border-radius:10px;display:none;z-index:40;max-width:90%;text-align:center}
+#cross{position:absolute;top:50%;left:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border:2px solid #0ff;border-radius:50%;opacity:.7;pointer-events:none;display:none}
+#cross::after{content:'';position:absolute;inset:5px;border:1px solid #f0f;border-radius:50%}
+#help{position:absolute;bottom:max(8px,env(safe-area-inset-bottom));left:8px;font-size:.65rem;color:#8cf;background:rgba(0,0,0,.55);padding:4px 8px;border-radius:6px;max-width:min(400px,75vw)}
+#manbar{position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(280px,70%);display:none}
+#manbar label{font-size:.6rem;color:#f88;display:block;text-align:center}
+#manbar .b{height:9px;background:#300;border-radius:5px;overflow:hidden;border:1px solid #f44}
+#manbar .f{height:100%;width:100%;background:linear-gradient(90deg,#0f8,#ff0,#f40);transition:width .25s}
+#stick{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:20px;width:110px;height:110px;border-radius:50%;background:rgba(0,40,80,.35);border:2px solid #0ff4;display:none;pointer-events:auto;touch-action:none;z-index:15}
+#knob{position:absolute;width:44px;height:44px;border-radius:50%;background:rgba(0,255,255,.45);border:2px solid #0ff;left:33px;top:33px}
+#btns{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));right:16px;display:none;flex-direction:column;gap:10px;pointer-events:auto;z-index:15}
+.mbtn{width:52px;height:52px;border-radius:50%;background:rgba(0,30,60,.7);border:2px solid #0ff6;color:#0ff;font-size:.65rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+#topbtns{position:absolute;top:max(10px,env(safe-area-inset-top));right:10px;z-index:50;display:flex;gap:6px;pointer-events:auto}
+#topbtns button{background:rgba(0,20,40,.7);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer}
+#phase{position:absolute;top:90px;left:50%;transform:translateX(-50%);background:rgba(40,0,55,.92);border:1px solid #f0f;padding:7px 14px;border-radius:18px;display:none;z-index:25;font-size:.8rem;color:#f0f;text-align:center;max-width:90%}
+</style>
+</head>
+<body>
+<div id="load"><div class="spin"></div><div style="color:#0ff">Loading Drone Arena…</div><div style="color:#668;font-size:.75rem">Void shooter · Xbox · Feature-verified</div></div>
+<div id="title">
+  <h1>DRONE ARENA — VOID SHOOTER</h1>
+  <p class="sub">Mount the drone · Pulse hostiles · Douse fires · Craft cloak / ward / jammer · Defend then burn The Man<br>
+  Third-person aerial combat · Keyboard + Xbox remappable</p>
+  <div class="chars">
+    <div class="card" data-c="dragon"><img src="../assets/dragon_hd.png" alt="Dragon" onerror="this.src='../assets/dragon.png'"><h3>🐉 DRAGON</h3><p>Frost · Aerial DPS</p></div>
+    <div class="card" data-c="panda"><img src="../assets/panda.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Suppress · Craft · Armor</p></div>
+  </div>
+  <button id="go" disabled>MOUNT UP</button>
+  <p style="margin-top:12px;color:#667;font-size:.72rem;text-align:center;max-width:480px">
+    F/LB mount · WASD/LS fly · Mouse/RS look · RT/Click shoot · B boom · LT/X douse · Y ability · P controls
+  </p>
+  <p style="margin-top:8px"><a href="../index.html" style="color:#0ff">← Hub</a></p>
+</div>
+<div id="ui">
+  <div id="hud">
+    <div class="box"><div style="font-size:.55rem;color:#8af">PILOT</div><div id="aname" style="font-weight:700">DRAGON</div><div id="st" style="font-size:.6rem;color:#6f6">Ground</div></div>
+    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">AMMO</div><div id="ammo" style="color:#0ff;font-weight:700">∞</div></div>
+    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">KILLS</div><div id="kills" style="color:#f0f;font-weight:700">0</div></div>
+    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">SCRAP</div><div id="scrap" style="color:#ff0;font-weight:700">0</div></div>
+  </div>
+  <div id="manbar"><label>THE MAN — INTEGRITY</label><div class="b"><div class="f" id="mf"></div></div></div>
+  <div id="phase"></div>
+  <div id="cross"></div>
+  <div id="help">LS/WASD fly · RS/Mouse look · RT shoot · B boom · LT douse · LB mount · Y ability · P remap · Xbox ready</div>
+  <div id="toast"></div>
+  <div id="stick"><div id="knob"></div></div>
+  <div id="btns">
+    <div class="mbtn" id="bShoot">FIRE</div>
+    <div class="mbtn" id="bBoom">BOOM</div>
+    <div class="mbtn" id="bDouse">DOUSE</div>
+    <div class="mbtn" id="bMount">MOUNT</div>
+  </div>
+</div>
+<div id="topbtns">
+  <button id="btn-controls">Controls / Xbox</button>
+  <button id="fs">Fullscreen</button>
+</div>
+<canvas id="c"></canvas>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+const IS_MOBILE = matchMedia('(pointer:coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
+const MAX_PR = IS_MOBILE ? 1.4 : 2;
+const NEON = [0xff00ff,0x00ffff,0xff6600,0x00ff88,0xff0088];
+const ASSETS = '../assets/';
+
+let scene, camera, renderer, controls, clock, player, pMesh, droneMesh;
+let vel = new THREE.Vector3();
+let keys = Object.create(null);
+let locked=false, char='dragon', mounted=false, kills=0, scrap=0, manHP=100, phase='scout';
+let coolS=0, coolB=0, coolD=0, coolA=0;
+let hostiles=[], fires=[], projectiles=[], pickups=[], theMan, dust;
+let cloak=0, ward=0, jammer=0, readiness=0;
+let stickActive=false, stickV={x:0,y:0};
+let textures={};
+
+function toast(m,t=2400){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',t)}
+function banner(m){const b=document.getElementById('phase');b.textContent=m;b.style.display='block';setTimeout(()=>b.style.display='none',6500)}
+function loadTex(url){return new Promise(res=>{new THREE.TextureLoader().load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;res(t)},undefined,()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#0ff';x.fillRect(0,0,64,64);res(new THREE.CanvasTexture(c))})})}
+
+async function init(){
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x020010);
+  scene.fog=new THREE.FogExp2(0x080020, IS_MOBILE?0.008:0.0055);
+  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,0.1,600);
+  camera.position.set(0,2,12);
+  renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:!IS_MOBILE,powerPreference:'high-performance'});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,MAX_PR));
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.2;
+
+  scene.add(new THREE.AmbientLight(0x1a1040,0.5));
+  const moon=new THREE.DirectionalLight(0x6688ff,0.55); moon.position.set(-30,70,-20); scene.add(moon);
+  for(let i=0;i<(IS_MOBILE?6:12);i++){
+    const l=new THREE.PointLight(NEON[i%5],2.2,40,1.6);
+    const a=(i/12)*Math.PI*2,r=20+Math.random()*40;
+    l.position.set(Math.cos(a)*r,4+Math.random()*8,Math.sin(a)*r); scene.add(l);
+  }
+
+  // Void platforms / arena ground rings
+  const ground=new THREE.Mesh(new THREE.CircleGeometry(90,48), new THREE.MeshStandardMaterial({color:0x1a1030,metalness:.6,roughness:.4,emissive:0x110022}));
+  ground.rotation.x=-Math.PI/2; scene.add(ground);
+  for(let i=1;i<=4;i++){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(18*i,0.08,8,64), new THREE.MeshBasicMaterial({color:NEON[i%5],transparent:true,opacity:.5,blending:THREE.AdditiveBlending}));
+    ring.rotation.x=Math.PI/2; ring.position.y=0.05; scene.add(ring);
+  }
+
+  // Floating pads
+  for(let i=0;i<8;i++){
+    const pad=new THREE.Mesh(new THREE.CylinderGeometry(3+Math.random()*2,3.5,.4,12), new THREE.MeshStandardMaterial({color:0x221144,metalness:.8,emissive:NEON[i%5],emissiveIntensity:.35}));
+    const a=(i/8)*Math.PI*2, r=22+Math.random()*25;
+    pad.position.set(Math.cos(a)*r, 2+Math.random()*6, Math.sin(a)*r);
+    scene.add(pad);
+  }
+
+  // Stars
+  const sPos=[]; for(let i=0;i<(IS_MOBILE?900:1800);i++){const r=250+Math.random()*150,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);sPos.push(r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph),r*Math.sin(ph)*Math.sin(th))}
+  const sGeo=new THREE.BufferGeometry(); sGeo.setAttribute('position',new THREE.Float32BufferAttribute(sPos,3));
+  scene.add(new THREE.Points(sGeo,new THREE.PointsMaterial({color:0xffffff,size:.5,transparent:true,opacity:.9})));
+
+  // THE MAN
+  theMan=new THREE.Group();
+  theMan.add(new THREE.Mesh(new THREE.CylinderGeometry(5,6,1.5,10), new THREE.MeshStandardMaterial({color:0x0a0a18,metalness:.9,emissive:0x220044,emissiveIntensity:.4})));
+  const body=new THREE.Mesh(new THREE.BoxGeometry(2.5,12,1.8), new THREE.MeshStandardMaterial({color:0x00e8ff,metalness:.95,emissive:0x004466,emissiveIntensity:.7}));
+  body.position.y=8; theMan.add(body);
+  theMan.add(new THREE.Mesh(new THREE.BoxGeometry(2.7,12.2,2), new THREE.MeshBasicMaterial({color:0xff00cc,wireframe:true,transparent:true,opacity:.5}))).position.y=8;
+  const head=new THREE.Mesh(new THREE.ConeGeometry(2,3.5,6), new THREE.MeshStandardMaterial({color:0xff00cc,emissive:0x550044,emissiveIntensity:1}));
+  head.position.y=16; theMan.add(head);
+  theMan.add(new THREE.PointLight(0xff00ff,10,60)).position.y=10;
+  theMan.position.set(0,0.5,0); scene.add(theMan);
+
+  // Field bench (craft)
+  const bench=new THREE.Mesh(new THREE.BoxGeometry(3,.6,1.5), new THREE.MeshStandardMaterial({color:0x223344,metalness:.7,emissive:0x004466,emissiveIntensity:.4}));
+  bench.position.set(10,0.3,8); bench.userData={bench:true}; scene.add(bench);
+  scene.add(new THREE.PointLight(0x00ffff,2,12)).position.set(10,2,8);
+
+  textures.dragon=await loadTex(ASSETS+'dragon_hd.png').catch(()=>loadTex(ASSETS+'dragon.png'));
+  textures.panda=await loadTex(ASSETS+'panda.png');
+  textures.drone=await loadTex(ASSETS+'suppress_drone.png');
+  textures.rogue=await loadTex(ASSETS+'rogue_drone.png');
+  textures.fire=await loadTex(ASSETS+'fire_patch.png');
+  textures.frost=await loadTex(ASSETS+'frost_breath.png');
+
+  player=new THREE.Group(); player.position.set(0,0,18); scene.add(player);
+  setChar('dragon');
+
+  // Drone mount visual
+  droneMesh=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.drone,transparent:true,alphaTest:.1,depthWrite:false}));
+  droneMesh.scale.set(2.2,2.2,1); droneMesh.position.set(4,1.2,16); droneMesh.userData={parked:true};
+  scene.add(droneMesh);
+
+  controls=new PointerLockControls(camera, document.body);
+  scene.add(controls.getObject());
+  controls.getObject().position.set(0,1.7,18);
+
+  spawnHostiles(6);
+  spawnPickups(20);
+
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+  document.addEventListener('keydown',e=>{keys[e.code]=true; if(e.code==='Tab')e.preventDefault(); onKey(e)});
+  document.addEventListener('keyup',e=>{keys[e.code]=false});
+  document.getElementById('c').addEventListener('click',()=>{if(!document.getElementById('title').style.display||document.getElementById('title').style.display==='none') controls.lock()});
+  controls.addEventListener('lock',()=>locked=true);
+  controls.addEventListener('unlock',()=>locked=false);
+  document.getElementById('fs').onclick=()=>{const el=document.documentElement; if(!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.()};
+  document.getElementById('btn-controls').onclick=()=>{DPControls.ensureStyles(); DPControls.openMapper()};
+  DPControls.ensureStyles();
+
+  document.querySelectorAll('.card').forEach(c=>{
+    c.onclick=()=>{document.querySelectorAll('.card').forEach(x=>x.classList.remove('on'));c.classList.add('on');char=c.dataset.c;document.getElementById('go').disabled=false};
+  });
+  document.getElementById('go').onclick=startGame;
+
+  if(IS_MOBILE){
+    document.getElementById('stick').style.display='block';
+    document.getElementById('btns').style.display='flex';
+    setupStick();
+    document.getElementById('bShoot').ontouchstart=e=>{e.preventDefault();shoot()};
+    document.getElementById('bBoom').ontouchstart=e=>{e.preventDefault();boom()};
+    document.getElementById('bDouse').ontouchstart=e=>{e.preventDefault();douse()};
+    document.getElementById('bMount').ontouchstart=e=>{e.preventDefault();toggleMount()};
+  }
+
+  clock=new THREE.Clock();
+  document.getElementById('load').style.display='none';
+  animate();
+}
+
+function setChar(c){
+  char=c;
+  if(pMesh){player.remove(pMesh);pMesh.material.dispose()}
+  const tex=c==='dragon'?textures.dragon:textures.panda;
+  pMesh=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,alphaTest:.08,depthWrite:false}));
+  pMesh.scale.set(c==='dragon'?2.2:2.0, c==='dragon'?3.2:3.0,1);
+  pMesh.position.y=1.6; player.add(pMesh);
+  document.getElementById('aname').textContent=c==='dragon'?'DRAGON':'CYBER PANDA';
+}
+
+function startGame(){
+  setChar(char);
+  document.getElementById('title').style.display='none';
+  document.getElementById('ui').style.display='flex';
+  document.getElementById('cross').style.display='block';
+  toast('Mount the drone (F / LB) or walk the pads. P = Controls / Xbox');
+}
+
+function onKey(e){
+  switch(e.code){
+    case 'KeyF': toggleMount(); break;
+    case 'KeyR': ability(); break;
+    case 'KeyB': boom(); break;
+    case 'KeyX': douse(); break;
+    case 'KeyE': craftOrInteract(); break;
+    case 'KeyC': if(cloak>0){cloak--; toast('👻 Cloak 8s'); setTimeout(()=>toast('Cloak ended'),8000)} break;
+    case 'Digit1': setChar('dragon'); break;
+    case 'Digit2': setChar('panda'); break;
+    case 'Space': if(mounted) vel.y+=4; else if(player.position.y<0.2) vel.y=7; break;
+  }
+}
+
+function setupStick(){
+  const st=document.getElementById('stick'), kn=document.getElementById('knob');
+  const max=32;
+  function set(x,y){const l=Math.hypot(x,y)||1;const cl=Math.min(l,max);stickV.x=(x/l)*cl/max;stickV.y=(y/l)*cl/max;kn.style.left=(33+stickV.x*max)+'px';kn.style.top=(33+stickV.y*max)+'px'}
+  st.ontouchstart=st.ontouchmove=e=>{e.preventDefault();stickActive=true;const t=e.touches[0],r=st.getBoundingClientRect();set(t.clientX-r.left-55,t.clientY-r.top-55)};
+  st.ontouchend=()=>{stickActive=false;stickV.x=stickV.y=0;kn.style.left='33px';kn.style.top='33px'};
+}
+
+function toggleMount(){
+  if(!mounted){
+    const d=player.position.distanceTo(droneMesh.position);
+    if(d>8 && !droneMesh.userData.parked===false){ /* allow remount always if already used */ }
+    if(d>10 && droneMesh.userData.parked){toast('Get closer to the parked drone (cyan)');return}
+    mounted=true; droneMesh.userData.parked=false;
+    document.getElementById('st').textContent='Mounted · Aerial';
+    toast('🚁 Drone mounted — fly free, RT to shoot');
+  }else{
+    mounted=false;
+    droneMesh.position.copy(player.position); droneMesh.position.y=1.2;
+    droneMesh.userData.parked=true;
+    controls.getObject().position.y=1.7;
+    document.getElementById('st').textContent='Ground';
+    toast('Dismounted');
+  }
+}
+
+function shoot(){
+  if(coolS>0) return; coolS=.18;
+  const dir=new THREE.Vector3(); camera.getWorldDirection(dir);
+  const bolt=new THREE.Mesh(new THREE.SphereGeometry(.12,6,6), new THREE.MeshBasicMaterial({color:char==='dragon'?0x00ffff:0xff00ff}));
+  bolt.position.copy(controls.getObject().position).add(dir.clone().multiplyScalar(1.5));
+  bolt.userData={vel:dir.multiplyScalar(55), life:1.2, dmg:12};
+  scene.add(bolt); projectiles.push(bolt);
+}
+
+function boom(){
+  if(coolB>0||scrap<5){if(scrap<5)toast('Need 5 scrap for boom');return}
+  coolB=1.2; scrap-=5; updateUI();
+  const dir=new THREE.Vector3(); camera.getWorldDirection(dir);
+  const orb=new THREE.Mesh(new THREE.SphereGeometry(.4,8,8), new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:.85}));
+  orb.position.copy(controls.getObject().position).add(dir.clone().multiplyScalar(2));
+  orb.userData={vel:dir.multiplyScalar(22), life:2, boom:true, dmg:40};
+  scene.add(orb); projectiles.push(orb);
+  toast('💥 Boom orb');
+}
+
+function douse(){
+  if(coolD>0) return; coolD=.8;
+  const pos=player.position.clone(); pos.y=1;
+  let n=0;
+  for(let i=fires.length-1;i>=0;i--){
+    if(pos.distanceTo(fires[i].position)<(mounted?14:5)){
+      scene.remove(fires[i]); fires.splice(i,1); manHP=Math.min(100,manHP+5); n++;
+    }
+  }
+  toast(n?`💧 Doused ${n} fires`:'No fires in range'); updateUI();
+}
+
+function ability(){
+  if(coolA>0) return; coolA=2.2;
+  if(char==='dragon'){
+    if(textures.frost){
+      const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.frost,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
+      s.scale.set(5,3,1);
+      const d=new THREE.Vector3(); camera.getWorldDirection(d);
+      s.position.copy(controls.getObject().position).add(d.multiplyScalar(3));
+      scene.add(s); setTimeout(()=>scene.remove(s),600);
+    }
+    // damage cone
+    const pos=controls.getObject().position.clone();
+    const dir=new THREE.Vector3(); camera.getWorldDirection(dir);
+    hostiles.forEach(h=>{
+      const to=h.position.clone().sub(pos); if(to.length()<14 && to.normalize().dot(dir)>.4){ h.userData.hp-=35; }
+    });
+    toast('❄️ Frost breath');
+  }else{
+    // suppress helper
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.drone,transparent:true,alphaTest:.1,depthWrite:false,color:0x00aaff}));
+    s.scale.set(1.2,1.2,1); s.position.copy(player.position); s.position.y=3;
+    s.userData={supp:true,life:25}; scene.add(s); hostiles.push(s); // reuse list filter
+    toast('🚁 Suppress deploy');
+  }
+}
+
+function craftOrInteract(){
+  const pos=player.position;
+  // bench
+  if(pos.distanceTo(new THREE.Vector3(10,0,8))<4){
+    if(scrap>=8){ scrap-=8; cloak++; ward++; jammer++; readiness+=15; toast('🛠️ Crafted cloak/ward/jammer · readiness +15'); updateUI(); checkWin(); }
+    else toast('Need 8 scrap at field bench');
+    return;
+  }
+  if(pos.distanceTo(theMan.position)<12){
+    if(readiness>=100 && manHP>40){
+      finalBurn();
+    }else toast(`Readiness ${readiness}% — craft & clear hostiles. Man HP ${manHP|0}`);
+  }
+}
+
+function spawnHostiles(n){
+  for(let i=0;i<n;i++){
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.rogue,transparent:true,alphaTest:.1,depthWrite:false}));
+    s.scale.set(1.4,1.4,1);
+    const a=Math.random()*Math.PI*2,r=25+Math.random()*40;
+    s.position.set(Math.cos(a)*r, 3+Math.random()*8, Math.sin(a)*r);
+    s.userData={hp:30, spd:.012+Math.random()*.02, phase:Math.random()*Math.PI*2, kindle:0};
+    scene.add(s); hostiles.push(s);
+  }
+}
+
+function spawnPickups(n){
+  for(let i=0;i<n;i++){
+    const m=new THREE.Mesh(new THREE.OctahedronGeometry(.35,0), new THREE.MeshStandardMaterial({color:NEON[i%5],emissive:NEON[i%5],emissiveIntensity:.8,metalness:.7}));
+    const a=Math.random()*Math.PI*2,r=8+Math.random()*50;
+    m.position.set(Math.cos(a)*r, 0.5+Math.random()*2, Math.sin(a)*r);
+    m.userData={scrap:3+Math.floor(Math.random()*5)}; scene.add(m); pickups.push(m);
+  }
+}
+
+function spawnFire(){
+  if(fires.length>12) return;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire,transparent:true,alphaTest:.04,blending:THREE.AdditiveBlending,depthWrite:false}));
+  s.scale.set(2,2,1);
+  const a=Math.random()*Math.PI*2,r=2+Math.random()*8;
+  s.position.set(Math.cos(a)*r,0.3,Math.sin(a)*r);
+  scene.add(s); fires.push(s); manHP=Math.max(0,manHP-2); updateUI();
+}
+
+function finalBurn(){
+  phase='complete';
+  for(let i=0;i<15;i++) setTimeout(()=>{
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    s.scale.set(3+Math.random()*3,3+Math.random()*3,1);
+    s.position.set((Math.random()-.5)*6,2+Math.random()*12,(Math.random()-.5)*4);
+    theMan.add(s);
+  },i*80);
+  theMan.add(new THREE.PointLight(0xff6600,20,80)).position.y=10;
+  scrap+=200; readiness=100;
+  banner('🔥 THE BURN — Arena complete. Radical self-expression.');
+  toast('Victory! Return to Hub for more.'); updateUI();
+}
+
+function checkWin(){
+  if(readiness>=100){ document.getElementById('manbar').style.display='block'; banner('Readiness 100% — clear hostiles, douse fires, approach Man to Burn'); phase='burn'; }
+}
+
+function updateUI(){
+  document.getElementById('kills').textContent=kills;
+  document.getElementById('scrap').textContent=scrap;
+  document.getElementById('mf').style.width=manHP+'%';
+}
+
+let fireT=0, spawnT=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),.05), t=clock.getElapsedTime();
+  coolS=Math.max(0,coolS-dt); coolB=Math.max(0,coolB-dt); coolD=Math.max(0,coolD-dt); coolA=Math.max(0,coolA-dt);
+
+  if(window.DPControls){
+    DPControls.tick();
+    if(DPControls.wasPressed('fly')) toggleMount();
+    if(DPControls.wasPressed('ability')) ability();
+    if(DPControls.wasPressed('boom')) boom();
+    if(DPControls.wasPressed('douse')) douse();
+    if(DPControls.wasPressed('interact')) craftOrInteract();
+    if(DPControls.wasPressed('avatar1')) setChar('dragon');
+    if(DPControls.wasPressed('avatar2')) setChar('panda');
+    if(DPControls.isDown('shoot')) shoot();
+    const ax=DPControls.getAxes();
+    if(DPControls.padConnected() && locked){
+      controls.getObject().rotation.y -= ax.rx * 2.4 * dt;
+      camera.rotation.x = Math.max(-1.3, Math.min(1.3, camera.rotation.x - ax.ry * 1.8 * dt));
+    }
+  }
+
+  if((locked||IS_MOBILE) && document.getElementById('title').style.display==='none'){
+    vel.x-=vel.x*6*dt; vel.z-=vel.z*6*dt;
+    if(!mounted) vel.y-=16*dt; else vel.y-=vel.y*2*dt;
+
+    let mx=0,mz=0;
+    if(keys.KeyW||keys.ArrowUp) mz-=1; if(keys.KeyS||keys.ArrowDown) mz+=1;
+    if(keys.KeyA||keys.ArrowLeft) mx-=1; if(keys.KeyD||keys.ArrowRight) mx+=1;
+    if(IS_MOBILE&&stickActive){mx+=stickV.x; mz+=stickV.y}
+    if(window.DPControls){const mv=DPControls.getMoveVector(); if(Math.abs(mv.rawX)>0.12||Math.abs(mv.rawY)>0.12){mx+=mv.rawX;mz+=mv.rawY}}
+    const len=Math.hypot(mx,mz)||1; mx/=len; mz/=len;
+    const spd=mounted?70:38;
+    if(mx||mz){vel.x-=mx*spd*dt; vel.z-=mz*spd*dt}
+    controls.moveRight(-vel.x*dt); controls.moveForward(-vel.z*dt);
+
+    if(mounted){
+      if(keys.Space) vel.y+=12*dt;
+      if(keys.ControlLeft||keys.ControlRight) vel.y-=12*dt;
+      controls.getObject().position.y+=vel.y*dt;
+      if(controls.getObject().position.y<1.5){controls.getObject().position.y=1.5;vel.y=0}
+      if(controls.getObject().position.y>45){controls.getObject().position.y=45;vel.y=0}
+      // drone follows camera
+      droneMesh.position.copy(controls.getObject().position);
+      droneMesh.position.y-=0.8;
+      droneMesh.position.add(new THREE.Vector3(0,0,0));
+      if(pMesh){pMesh.visible=true; pMesh.position.y=0.2; player.position.copy(controls.getObject().position); player.position.y-=1.2}
+    }else{
+      controls.getObject().position.y+=vel.y*dt;
+      if(controls.getObject().position.y<1.7){vel.y=0;controls.getObject().position.y=1.7}
+      player.position.x=controls.getObject().position.x;
+      player.position.z=controls.getObject().position.z;
+      player.position.y=0;
+      if(pMesh){pMesh.visible=!locked; pMesh.position.y=1.6}
+    }
+
+    if(keys.Mouse0) shoot();
+  }
+
+  // Projectiles
+  for(let i=projectiles.length-1;i>=0;i--){
+    const p=projectiles[i];
+    p.position.add(p.userData.vel.clone().multiplyScalar(dt));
+    p.userData.life-=dt;
+    if(p.userData.life<=0){scene.remove(p);projectiles.splice(i,1);continue}
+    // hit hostiles
+    for(let j=hostiles.length-1;j>=0;j--){
+      const h=hostiles[j];
+      if(h.userData.supp) continue;
+      if(p.position.distanceTo(h.position)<(p.userData.boom?4:1.2)){
+        h.userData.hp-=p.userData.dmg;
+        if(p.userData.boom){ /* splash */ hostiles.forEach(o=>{if(!o.userData.supp&&o.position.distanceTo(p.position)<5)o.userData.hp-=20}) }
+        scene.remove(p); projectiles.splice(i,1);
+        if(h.userData.hp<=0){scene.remove(h);hostiles.splice(j,1);kills++;scrap+=8;readiness=Math.min(100,readiness+3);toast('+8 scrap');updateUI();checkWin()}
+        break;
+      }
+    }
+  }
+
+  // Hostiles AI — move toward Man, kindle fires
+  for(let i=hostiles.length-1;i>=0;i--){
+    const h=hostiles[i];
+    if(h.userData.supp){
+      h.userData.life-=dt; h.position.y=2.5+Math.sin(t*3)*.3;
+      if(h.userData.life<=0){scene.remove(h);hostiles.splice(i,1);continue}
+      if(fires.length){
+        const f=fires[0]; const d=f.position.clone().sub(h.position); d.y=0;
+        if(d.length()<2){scene.remove(f);fires.shift();manHP=Math.min(100,manHP+4);updateUI()}
+        else{d.normalize().multiplyScalar(6*dt); h.position.x+=d.x; h.position.z+=d.z}
+      }
+      continue;
+    }
+    h.position.y=3+Math.sin(t*2+h.userData.phase)*1.2;
+    const to=theMan.position.clone().sub(h.position); to.y=0;
+    if(to.length()>10){to.normalize().multiplyScalar(h.userData.spd*50*dt); h.position.x+=to.x; h.position.z+=to.z}
+    else{h.userData.kindle=(h.userData.kindle||0)+dt; if(h.userData.kindle>4){h.userData.kindle=0; spawnFire()}}
+  }
+
+  // Pickups
+  for(let i=pickups.length-1;i>=0;i--){
+    const p=pickups[i]; p.rotation.y+=dt*2; p.position.y=0.5+Math.sin(t*2+i)*.2;
+    if(player.position.distanceTo(p.position)<2.2){scrap+=p.userData.scrap; scene.remove(p);pickups.splice(i,1);updateUI()}
+  }
+
+  fireT+=dt; if(fireT>3.5 && phase!=='complete'){fireT=0; if(hostiles.filter(h=>!h.userData.supp).length) spawnFire()}
+  spawnT+=dt; if(spawnT>8 && hostiles.filter(h=>!h.userData.supp).length<8 && phase!=='complete'){spawnT=0; spawnHostiles(2)}
+
+  // Man rings spin
+  theMan.children.forEach(c=>{if(c.geometry?.type==='TorusGeometry') c.rotation.z=t*.3});
+
+  if(document.getElementById('manbar').style.display!=='none' || readiness>=60) document.getElementById('manbar').style.display='block';
+
+  renderer.render(scene,camera);
+}
+
+document.addEventListener('mousedown',e=>{if(e.button===0) keys.Mouse0=true});
+document.addEventListener('mouseup',e=>{if(e.button===0) keys.Mouse0=false});
+
+init().catch(e=>{console.error(e); document.getElementById('load').innerHTML='<div style="color:#f66">Load failed</div>'});
+</script>
+</body>
+</html>

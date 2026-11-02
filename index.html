@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0020">
+<title>Dragon & Panda Hub — Burning Man + Drone Arena</title>
+<link rel="stylesheet" href="css/hub.css">
+<script src="js/controls.js"></script>
+</head>
+<body class="hub">
+<div class="pad-banner" id="pad-banner">Xbox / gamepad: plug in and press any button · open <b>Controls / Xbox</b> to remap</div>
+<header class="hub-header">
+  <h1>DRAGON & PANDA</h1>
+  <p>Unified showcase — Cyberpunk Burning Man ground festival + Drone void-shooter arena.<br>
+  Updated builds · shared control customizer (keyboard + Xbox) · feature-stop tutorials · verified sprites.</p>
+</header>
+<nav class="hub-nav">
+  <a href="#play" class="on">Play</a>
+  <a href="#tutorials">Tutorials</a>
+  <a href="#controls">Controls / Xbox</a>
+  <a href="#versions">Versions</a>
+  <a href="#verify">Asset check</a>
+  <button type="button" id="open-mapper">Open Control Customizer</button>
+</nav>
+<main class="hub-main">
+  <section class="section" id="play">
+    <h2>Play modes</h2>
+    <div class="grid">
+      <article class="card-mode">
+        <h3>🏜️ Ground — Burning Man Playa</h3>
+        <p>Collect neon shards · NPC quests · ZPEG generators · fly & frost · defend The Man · final Burn. Cyber car mount. First/third hybrid roam.</p>
+        <div class="meta">v2 efficient · Xbox + touch · phases Collect → Drone → Defend → Burn</div>
+        <div class="actions">
+          <a class="btn btn-primary" href="play/ground.html">Play Ground</a>
+          <a class="btn btn-ghost" href="#tut-ground">Watch tutorial</a>
+        </div>
+      </article>
+      <article class="card-mode">
+        <h3>🚁 Drone Arena — Void Shooter</h3>
+        <p>Mount drone · third-person aerial combat · pulse gun · boom orbs · douse fires · craft cloak/ward/jammer · defend then burn The Man.</p>
+        <div class="meta">Merged TPS layer · Xbox remappable · scrap economy · readiness 100%</div>
+        <div class="actions">
+          <a class="btn btn-primary" href="play/drone.html">Play Drone Arena</a>
+          <a class="btn btn-ghost" href="#tut-drone">Watch tutorial</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="section" id="tutorials">
+    <h2>Feature-stop tutorials</h2>
+    <p style="color:#9cf;font-size:.9rem;margin:-8px 0 16px">Videos pause-aligned to each feature so you can learn the intended success flow. Click a step to jump.</p>
+
+    <div id="tut-ground" style="margin-bottom:32px">
+      <h3 style="color:#f0f;margin:0 0 10px">Ground game — success flow</h3>
+      <div class="tut-wrap">
+        <div class="video-box">
+          <video id="vid-ground" controls playsinline preload="metadata" src="videos/tutorial-ground.mp4"></video>
+        </div>
+        <ol class="feature-stops" id="stops-ground">
+          <li data-t="0"><span class="n">1</span><div><b>Select character</b> Dragon or Cyber Panda<span class="ctrl">Mouse / A · 1/2 · D-pad</span></div></li>
+          <li data-t="2.2"><span class="n">2</span><div><b>Free roam · collect</b> Glowing shards & items<span class="ctrl">WASD / LS · E / A pick up</span></div></li>
+          <li data-t="4.5"><span class="n">3</span><div><b>NPC quests</b> Turn in for kits & tokens<span class="ctrl">E / A near NPC</span></div></li>
+          <li data-t="6.5"><span class="n">4</span><div><b>ZPEG generators</b> Place near The Man<span class="ctrl">Station pad · E</span></div></li>
+          <li data-t="8.5"><span class="n">5</span><div><b>Rogue drones · fly & frost</b><span class="ctrl">F / LB fly · R / Y frost · RT shoot</span></div></li>
+          <li data-t="10.5"><span class="n">6</span><div><b>Defend The Man</b> Stomp fires · suppress drones<span class="ctrl">E stomp · R panda drone · LT douse</span></div></li>
+          <li data-t="12.5"><span class="n">7</span><div><b>The Burn</b> Light The Man — win<span class="ctrl">E at Man when clear</span></div></li>
+        </ol>
+      </div>
+    </div>
+
+    <div id="tut-drone">
+      <h3 style="color:#f0f;margin:0 0 10px">Drone arena — success flow</h3>
+      <div class="tut-wrap">
+        <div class="video-box">
+          <video id="vid-drone" controls playsinline preload="metadata" src="videos/tutorial-drone.mp4"></video>
+        </div>
+        <ol class="feature-stops" id="stops-drone">
+          <li data-t="0"><span class="n">1</span><div><b>Mount drone</b><span class="ctrl">F / LB near drone pad</span></div></li>
+          <li data-t="2.2"><span class="n">2</span><div><b>Fly third-person</b><span class="ctrl">WASD / LS · RS look · Space climb</span></div></li>
+          <li data-t="4.8"><span class="n">3</span><div><b>Pulse gun</b> Clear hostiles<span class="ctrl">RT / Click / FIRE</span></div></li>
+          <li data-t="6.5"><span class="n">4</span><div><b>Boom orbs</b> Spend scrap<span class="ctrl">B · needs 5 scrap</span></div></li>
+          <li data-t="8.2"><span class="n">5</span><div><b>Douse fires</b> Protect The Man<span class="ctrl">LT / X / DOUSE</span></div></li>
+          <li data-t="10"><span class="n">6</span><div><b>Craft cloak · ward · jammer</b> Field bench<span class="ctrl">E at bench · 8 scrap</span></div></li>
+          <li data-t="12.2"><span class="n">7</span><div><b>Defend → Burn</b> Readiness 100%<span class="ctrl">E at Man</span></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="controls">
+    <h2>Control customizer</h2>
+    <p style="color:#9cf;font-size:.9rem;margin:-8px 0 12px">Keyboard and Xbox maps stored separately (<code>dp_binds_v2</code> / <code>dp_pad_v2</code>). Works in both play modes. Press <b>P</b> in-game or use the button.</p>
+    <div class="actions" style="margin-bottom:12px">
+      <button type="button" class="btn btn-primary" id="open-mapper-2">Open Controls / Xbox Mapper</button>
+      <button type="button" class="btn btn-ghost" id="reset-key">Reset Keyboard</button>
+      <button type="button" class="btn btn-ghost" id="reset-pad">Reset Xbox</button>
+    </div>
+    <div class="grid">
+      <div class="card-mode">
+        <h3>Default keyboard</h3>
+        <p style="font-size:.82rem;line-height:1.6">WASD move · Mouse look · E interact · F fly/drone · V drive/dragon · R ability · Space jump · B boom · X douse · Click shoot · P mapper · 1/2 avatar</p>
+      </div>
+      <div class="card-mode">
+        <h3>Default Xbox</h3>
+        <p style="font-size:.82rem;line-height:1.6">LS move · RS look · A use · RT shoot · B boom · LB drone/fly · RB drive · X cloak · Y ability · LT douse · Menu mapper · D-pad avatars</p>
+        <div class="meta" id="pad-live">Pad status: checking…</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="versions">
+    <h2>Updated versions in this hub</h2>
+    <div class="ver-list">
+      <div class="ver-item"><span><b>Hub landing</b> — merged entry + tutorials + mapper</span><code>index.html</code></div>
+      <div class="ver-item"><span><b>Ground v2+</b> — Burning Man + Xbox + HD cyber panda/car</span><a href="play/ground.html">play/ground.html</a></div>
+      <div class="ver-item"><span><b>Drone Arena</b> — void-shooter TPS merge</span><a href="play/drone.html">play/drone.html</a></div>
+      <div class="ver-item"><span><b>Shared controls</b> — remapper Gamepad API</span><code>js/controls.js</code></div>
+      <div class="ver-item"><span><b>Legacy</b> phases / omega / hd (archive in cyberpunk-burning-man-game/)</span><span style="color:#668">unchanged</span></div>
+    </div>
+  </section>
+
+  <section class="section" id="verify">
+    <h2>Asset · sprite · control verification</h2>
+    <p style="color:#9cf;font-size:.85rem;margin:-8px 0 12px">Automated checks on load. Green = OK for play without breaking other systems.</p>
+    <div class="checklist" id="checklist">Loading…</div>
+  </section>
+</main>
+<footer class="hub-footer">Dragon & Panda showcase · Black Rock City 2077 · Static multi-platform WebGL</footer>
+<script>
+DPControls.ensureStyles();
+document.getElementById('open-mapper').onclick =
+document.getElementById('open-mapper-2').onclick = () => DPControls.openMapper();
+document.getElementById('reset-key').onclick = () => DPControls.resetBinds('key');
+document.getElementById('reset-pad').onclick = () => DPControls.resetBinds('pad');
+
+// Feature-stop jump
+function wireStops(vidId, listId) {
+  const v = document.getElementById(vidId);
+  const items = [...document.querySelectorAll('#' + listId + ' li')];
+  items.forEach(li => {
+    li.onclick = () => {
+      const t = parseFloat(li.dataset.t) || 0;
+      v.currentTime = t;
+      v.play();
+      items.forEach(x => x.classList.remove('active'));
+      li.classList.add('active');
+    };
+  });
+  v.addEventListener('timeupdate', () => {
+    const t = v.currentTime;
+    let best = items[0];
+    items.forEach(li => {
+      const st = parseFloat(li.dataset.t) || 0;
+      if (t + 0.15 >= st) best = li;
+    });
+    items.forEach(x => x.classList.toggle('active', x === best));
+  });
+}
+wireStops('vid-ground', 'stops-ground');
+wireStops('vid-drone', 'stops-drone');
+
+// Pad status poll
+function updatePad() {
+  DPControls.tick();
+  const el = document.getElementById('pad-live');
+  const b = document.getElementById('pad-banner');
+  if (DPControls.padConnected()) {
+    el.textContent = 'Pad status: 🟢 connected — open mapper to rebind';
+    b.innerHTML = '🟢 Xbox / gamepad active · <b>Controls / Xbox</b> to customize · P in-game';
+  } else {
+    el.textContent = 'Pad status: ⚪ none — connect Xbox / press a button';
+  }
+  requestAnimationFrame(() => setTimeout(updatePad, 500));
+}
+updatePad();
+
+// Asset verification
+async function verifyAssets() {
+  const files = [
+    'assets/panda.png','assets/dragon.png','assets/dragon_hd.png','assets/car.png',
+    'assets/rogue_drone.png','assets/suppress_drone.png','assets/fire_patch.png',
+    'assets/frost_breath.png','assets/ground.jpg','assets/zpeg.png',
+    'assets/npc_shaman.png','assets/npc_fox.png','assets/npc_pilot.png',
+    'assets/item_shard.png','assets/item_spark.png',
+    'videos/tutorial-ground.mp4','videos/tutorial-drone.mp4',
+    'js/controls.js','play/ground.html','play/drone.html'
+  ];
+  const box = document.getElementById('checklist');
+  box.innerHTML = '';
+  let ok = 0, bad = 0;
+  await Promise.all(files.map(async f => {
+    const el = document.createElement('div');
+    el.className = 'check';
+    try {
+      const r = await fetch(f, { method: 'HEAD' });
+      if (r.ok) { el.innerHTML = '<span class="ok">✓</span> ' + f; ok++; }
+      else { el.className = 'check bad'; el.textContent = '✗ ' + f + ' (' + r.status + ')'; bad++; }
+    } catch (e) {
+      el.className = 'check bad'; el.textContent = '✗ ' + f; bad++;
+    }
+    box.appendChild(el);
+  }));
+  // control function smoke checks
+  const smoke = document.createElement('div');
+  smoke.className = 'check';
+  const has = !!(window.DPControls && typeof DPControls.isDown === 'function' && typeof DPControls.openMapper === 'function');
+  if (has) { smoke.innerHTML = '<span class="ok">✓</span> DPControls API (isDown, openMapper, Gamepad tick)'; ok++; }
+  else { smoke.className = 'check bad'; smoke.textContent = '✗ DPControls missing'; bad++; }
+  box.appendChild(smoke);
+  const sum = document.createElement('div');
+  sum.className = 'check';
+  sum.innerHTML = `<span class="ok">Summary</span> ${ok} OK · ${bad} failed · Xbox Gamepad API: ${'getGamepads' in navigator ? 'available' : 'missing'}`;
+  box.appendChild(sum);
+}
+verifyAssets();
+</script>
+</body>
+</html>

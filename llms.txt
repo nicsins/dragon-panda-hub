@@ -1,0 +1,5 @@
+# Dragon & Panda Hub
+> Unified Cyberpunk Burning Man ground game + Drone void-shooter arena
+> Play: /play/ground.html | /play/drone.html
+> Controls: shared Xbox/keyboard remapper (js/controls.js)
+> Tutorials: /videos/tutorial-ground.mp4 | /videos/tutorial-drone.mp4

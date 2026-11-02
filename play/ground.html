@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Cyberpunk Burning Man — Dragon & Panda v2</title>
+
+<link rel="stylesheet" href="../css/hub.css">
+<script src="../js/controls.js"></script>
+
+<style>
+:root{--c:#0ff;--m:#f0f;--bg:#030012}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,sans-serif;color:var(--c);touch-action:none}
+#c{position:fixed;inset:0;display:block}
+#ui{position:fixed;inset:0;pointer-events:none;z-index:10;display:none;flex-direction:column}
+#hud{padding:max(10px,env(safe-area-inset-top)) 12px 0;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent)}
+.box{background:rgba(0,12,30,.88);border:1px solid #0ff5;border-radius:10px;padding:7px 11px;backdrop-filter:blur(8px);box-shadow:0 0 16px #0ff3;pointer-events:auto;font-size:.8rem}
+#title{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 40%,#1a0038 0%,#000 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;pointer-events:auto;transition:opacity .7s}
+#title h1{font-size:clamp(1.6rem,5vw,2.8rem);background:linear-gradient(90deg,#f0f,#0ff,#f0f);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;letter-spacing:1px;margin-bottom:.4rem}
+#title .sub{color:#9cf;font-size:.88rem;text-align:center;max-width:560px;line-height:1.4;margin-bottom:1.2rem}
+.chars{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
+.card{width:min(180px,42vw);cursor:pointer;text-align:center;background:rgba(0,20,45,.7);border:2px solid #0ff5;border-radius:14px;padding:10px;transition:transform .25s,box-shadow .25s;box-shadow:0 0 24px #0ff3}
+.card:hover,.card.on{transform:scale(1.06);border-color:#f0f;box-shadow:0 0 40px #f0f8}
+.card img{width:100%;height:200px;object-fit:contain;border-radius:8px;background:linear-gradient(180deg,#0a0520,#000)}
+.card h3{margin-top:8px;color:#0ff;font-size:1.05rem}
+.card p{color:#aaf;font-size:.72rem;margin-top:2px}
+#go{padding:13px 36px;font-size:1.05rem;font-weight:700;background:linear-gradient(90deg,#f0f,#0ff);color:#000;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px #f0f8;margin-top:.5rem}
+#go:disabled{opacity:.35;cursor:not-allowed}
+#go:not(:disabled):hover{transform:scale(1.04)}
+#load{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.spin{width:48px;height:48px;border:3px solid #0ff3;border-top-color:#f0f;border-radius:50%;animation:s .85s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+#toast{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(0,25,55,.95);border:1px solid #0ff;padding:9px 16px;border-radius:10px;display:none;z-index:40;max-width:90%;text-align:center;font-size:.88rem;box-shadow:0 0 20px #0ff5}
+#dlg{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(620px,92%);background:rgba(0,8,22,.96);border:1px solid #0ff;border-radius:12px;padding:14px 16px;display:none;pointer-events:auto;z-index:30;box-shadow:0 0 36px #0ff5}
+#dlg h4{color:#f0f;margin-bottom:6px;display:flex;justify-content:space-between}
+#dlg p{color:#dff;font-size:.9rem;line-height:1.4;white-space:pre-wrap}
+#dlg .x{cursor:pointer;font-size:1.25rem;color:#0ff}
+#dlg .acts{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+#dlg button{padding:7px 12px;background:linear-gradient(90deg,#0ff3,#f0f3);border:1px solid #0ff;color:#fff;border-radius:8px;cursor:pointer;font-size:.82rem}
+#help{position:absolute;bottom:max(8px,env(safe-area-inset-bottom));left:8px;font-size:.65rem;color:#8cf;background:rgba(0,0,0,.55);padding:4px 8px;border-radius:6px;max-width:min(360px,70vw);line-height:1.3}
+#manbar{position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(280px,70%);display:none;z-index:20}
+#manbar label{font-size:.6rem;color:#f88;display:block;text-align:center;margin-bottom:2px}
+#manbar .b{height:9px;background:#300;border-radius:5px;overflow:hidden;border:1px solid #f44}
+#manbar .f{height:100%;width:100%;background:linear-gradient(90deg,#0f8,#ff0,#f40);transition:width .25s}
+#phase{position:absolute;top:90px;left:50%;transform:translateX(-50%);background:rgba(40,0,55,.92);border:1px solid #f0f;padding:7px 14px;border-radius:18px;display:none;z-index:25;font-size:.8rem;color:#f0f;text-align:center;max-width:90%;box-shadow:0 0 24px #f0f6}
+/* Mobile virtual stick */
+#stick{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:20px;width:110px;height:110px;border-radius:50%;background:rgba(0,40,80,.35);border:2px solid #0ff4;display:none;pointer-events:auto;touch-action:none;z-index:15}
+#knob{position:absolute;width:44px;height:44px;border-radius:50%;background:rgba(0,255,255,.45);border:2px solid #0ff;left:33px;top:33px;pointer-events:none}
+#btns{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));right:16px;display:none;flex-direction:column;gap:10px;pointer-events:auto;z-index:15}
+.mbtn{width:52px;height:52px;border-radius:50%;background:rgba(0,30,60,.7);border:2px solid #0ff6;color:#0ff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;user-select:none}
+.mbtn:active{background:#0ff4;color:#000}
+#fs{position:absolute;top:max(10px,env(safe-area-inset-top));right:10px;z-index:50;pointer-events:auto;background:rgba(0,20,40,.7);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="load"><div class="spin"></div><div style="color:#0ff">Loading Cyberpunk Playa v2…</div><div style="color:#668;font-size:.75rem">Awesome graphics · Physics · Multi-platform</div></div>
+<div id="title">
+  <h1>CYBERPUNK BURNING MAN</h1>
+  <p class="sub">Black Rock City 2077 — Playable neon festival world<br>
+  Collect · Mount the cyber car · Defend The Man · The Burn<br>
+  Efficient WebGL · Works on desktop, tablet & phone</p>
+  <div class="chars">
+    <div class="card" data-c="dragon"><img src="../assets/dragon.png" alt="Dragon"><h3>🐉 DRAGON</h3><p>Fly · Frost · Aerial</p></div>
+    <div class="card" data-c="panda"><img src="../assets/panda.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Drive · Suppress · Armor</p></div>
+  </div>
+  <button id="go" disabled>ENTER THE PLAYA</button>
+  <p style="margin-top:10px"><a href="../index.html" style="color:#0ff">← Dragon & Panda Hub</a></p>
+  <p style="margin-top:12px;color:#667;font-size:.72rem;text-align:center;max-width:480px">
+    Desktop: WASD · Mouse · E interact · F fly · V drive · R ability · Space jump<br>
+    Mobile: virtual stick + action buttons · Tap canvas for look
+  </p>
+</div>
+<div id="ui">
+  <div id="hud">
+    <div class="box"><div style="font-size:.6rem;color:#8af">AVATAR</div><div id="aname" style="font-weight:700">DRAGON</div><div id="st" style="font-size:.6rem;color:#6f6">Explore</div></div>
+    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">TOKENS</div><div id="tok" style="color:#ff0;font-weight:700;font-size:1.05rem">0</div></div>
+    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">PHASE</div><div id="ph" style="color:#f0f;font-weight:600">COLLECT</div></div>
+  </div>
+  <div id="manbar"><label>THE MAN — INTEGRITY</label><div class="b"><div class="f" id="mf"></div></div></div>
+  <div id="phase"></div>
+  <div id="help">WASD/LS | Mouse/RS | E/A interact | F/LB fly | V/RB drive | R/Y ability | RT shoot | P controls | Xbox supported</div>
+  <div id="dlg"><h4><span id="dn">NPC</span><span class="x" id="dx">×</span></h4><p id="dt"></p><div class="acts" id="da"></div></div>
+  <div id="toast"></div>
+  <div id="stick"><div id="knob"></div></div>
+  <div id="btns">
+    <div class="mbtn" id="bE">E</div>
+    <div class="mbtn" id="bR">R</div>
+    <div class="mbtn" id="bF">F/V</div>
+    <div class="mbtn" id="bJ">JUMP</div>
+  </div>
+</div>
+<button id="fs">Fullscreen</button>
+<button id="btn-controls" style="position:absolute;top:max(10px,env(safe-area-inset-top));right:100px;z-index:50;pointer-events:auto;background:rgba(0,20,40,.7);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer">Controls / Xbox</button>
+<canvas id="c"></canvas>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+// ========== CONFIG ==========
+const IS_MOBILE = matchMedia('(pointer:coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
+const MAX_PR = IS_MOBILE ? 1.5 : 2;
+const NEON = [0xff00ff,0x00ffff,0xff6600,0x00ff88,0xff0088,0x88ff00,0xffaa00];
+const ASSETS = '../assets/';
+
+// ========== STATE ==========
+let scene, camera, renderer, controls, clock, player, pMesh, carMesh, carGroup;
+let vel = new THREE.Vector3(), dir = new THREE.Vector3();
+let keys = Object.create(null);
+let locked=false, dlg=false, char='dragon', tokens=0, phase='collect', manHP=100;
+let flying=false, driving=false, canJump=true;
+let installations=[], npcs=[], items=[], fires=[], drones=[], enemies=[], gens=[];
+let theMan, dust, coolF=0, coolA=0, questsDone=0, zpegs=0;
+let stickActive=false, stickV={x:0,y:0};
+let textures = {};
+
+// ========== AUDIO (tiny WebAudio beeps) ==========
+const AC = window.AudioContext || window.webkitAudioContext;
+let actx;
+function beep(f=440,d=.08,type='square',g=.04){
+  try{
+    if(!actx) actx=new AC();
+    const o=actx.createOscillator(), gn=actx.createGain();
+    o.type=type; o.frequency.value=f; gn.gain.value=g;
+    o.connect(gn); gn.connect(actx.destination);
+    o.start(); gn.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d); o.stop(actx.currentTime+d);
+  }catch(e){}
+}
+
+// ========== HELPERS ==========
+function toast(m,t=2600){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',t)}
+function setPhase(p){phase=p;document.getElementById('ph').textContent=p.toUpperCase();document.getElementById('st').textContent='Phase: '+p}
+function banner(m){const b=document.getElementById('phase');b.textContent=m;b.style.display='block';setTimeout(()=>b.style.display='none',7000)}
+function loadTex(url){
+  return new Promise(res=>{
+    new THREE.TextureLoader().load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;t.generateMipmaps=true;res(t)},undefined,()=>{
+      const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#0ff';x.fillRect(0,0,64,64);res(new THREE.CanvasTexture(c));
+    });
+  });
+}
+
+// ========== INIT ==========
+async function init(){
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x030012);
+  scene.fog = new THREE.FogExp2(0x0a0028, IS_MOBILE ? 0.007 : 0.005);
+
+  camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 800);
+  camera.position.set(0,1.7,24);
+
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'), antialias:!IS_MOBILE, powerPreference:'high-performance'});
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PR));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.15;
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x1a1040, 0.55));
+  const moon = new THREE.DirectionalLight(0x6688ff, 0.6); moon.position.set(-40,80,-20); scene.add(moon);
+  const fill = new THREE.DirectionalLight(0xff44aa, 0.2); fill.position.set(30,40,40); scene.add(fill);
+  for(let i=0;i<(IS_MOBILE?8:14);i++){
+    const l=new THREE.PointLight(NEON[i%7], 2.4, 42, 1.6);
+    const a=(i/14)*Math.PI*2, r=16+Math.random()*48;
+    l.position.set(Math.cos(a)*r, 2+Math.random()*6, Math.sin(a)*r);
+    scene.add(l);
+  }
+
+  // Ground
+  const gTex = await loadTex(ASSETS+'ground.jpg');
+  gTex.wrapS=gTex.wrapT=THREE.RepeatWrapping; gTex.repeat.set(28,28);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(320,320), new THREE.MeshStandardMaterial({map:gTex, roughness:.92, metalness:.05, color:0xccbbaa}));
+  ground.rotation.x=-Math.PI/2; scene.add(ground);
+
+  // Stars
+  const sPos=[]; for(let i=0;i<(IS_MOBILE?1200:2200);i++){const r=280+Math.random()*180,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);sPos.push(r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph),r*Math.sin(ph)*Math.sin(th))}
+  const sGeo=new THREE.BufferGeometry(); sGeo.setAttribute('position',new THREE.Float32BufferAttribute(sPos,3));
+  scene.add(new THREE.Points(sGeo, new THREE.PointsMaterial({color:0xffffff,size:0.55,transparent:true,opacity:.9})));
+
+  // Dust
+  const dPos=[]; for(let i=0;i<(IS_MOBILE?600:1100);i++) dPos.push((Math.random()-.5)*180, Math.random()*14, (Math.random()-.5)*180);
+  const dGeo=new THREE.BufferGeometry(); dGeo.setAttribute('position',new THREE.Float32BufferAttribute(dPos,3));
+  dust = new THREE.Points(dGeo, new THREE.PointsMaterial({color:0xb0d0ff,size:0.1,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false}));
+  scene.add(dust);
+
+  // THE MAN
+  theMan = new THREE.Group();
+  theMan.add(new THREE.Mesh(new THREE.CylinderGeometry(7.5,9.5,2,12), new THREE.MeshStandardMaterial({color:0x0a0a18,metalness:.9,roughness:.25,emissive:0x220044,emissiveIntensity:.4})));
+  const body = new THREE.Mesh(new THREE.BoxGeometry(3,15,2), new THREE.MeshStandardMaterial({color:0x00e8ff,metalness:.95,roughness:.12,emissive:0x004466,emissiveIntensity:.7}));
+  body.position.y=10.5; theMan.add(body);
+  {const _w=new THREE.Mesh(new THREE.BoxGeometry(3.2,15.2,2.2), new THREE.MeshBasicMaterial({color:0xff00cc,wireframe:true,transparent:true,opacity:.5}));_w.position.y=10.5;theMan.add(_w);}
+  const head=new THREE.Mesh(new THREE.ConeGeometry(2.4,4.5,6), new THREE.MeshStandardMaterial({color:0xff00cc,metalness:.85,emissive:0x550044,emissiveIntensity:1}));
+  head.position.y=20.5; theMan.add(head);
+  for(const s of[-1,1]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.9,7.5,.9),new THREE.MeshStandardMaterial({color:0x00ffaa,emissive:0x003322,emissiveIntensity:.65,metalness:.8}));arm.position.set(s*3,12.5,0);arm.rotation.z=s*.28;theMan.add(arm)}
+  for(let i=0;i<5;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(6+i*1.7,.11,8,48),new THREE.MeshBasicMaterial({color:NEON[i%7],transparent:true,opacity:.75,blending:THREE.AdditiveBlending}));ring.position.y=2.5+i*3.2;ring.rotation.x=Math.PI/2;theMan.add(ring)}
+  theMan.add(new THREE.PointLight(0xff00ff,11,70)).position.y=13;
+  theMan.add(new THREE.PointLight(0x00ffff,6,45)).position.set(0,21,0);
+  theMan.position.set(0,1,0); scene.add(theMan); installations.push(theMan);
+
+  // Fiber forest
+  for(let i=0;i<(IS_MOBILE?28:42);i++){
+    const h=2.2+Math.random()*6.5;
+    const f=new THREE.Mesh(new THREE.CylinderGeometry(.04,.07,h,5), new THREE.MeshBasicMaterial({color:NEON[i%7],transparent:true,opacity:.85,blending:THREE.AdditiveBlending}));
+    const a=Math.random()*Math.PI*2, r=14+Math.random()*58;
+    f.position.set(Math.cos(a)*r, h/2, Math.sin(a)*r); scene.add(f); installations.push(f);
+  }
+
+  // Floating gems
+  for(let i=0;i<(IS_MOBILE?6:10);i++){
+    const py=new THREE.Mesh(new THREE.OctahedronGeometry(1.8+Math.random()*1.8,0), new THREE.MeshStandardMaterial({color:NEON[i%7],transparent:true,opacity:.42,emissive:NEON[i%7],emissiveIntensity:.5,metalness:.9,wireframe:Math.random()>.4}));
+    const a=(i/10)*Math.PI*2+.2, r=32+Math.random()*32;
+    py.position.set(Math.cos(a)*r, 3.5+Math.random()*2.5, Math.sin(a)*r);
+    py.userData={float:true,baseY:py.position.y,phase:Math.random()*Math.PI*2};
+    scene.add(py); installations.push(py);
+  }
+
+  // Simple art cars (procedural)
+  for(let i=0;i<(IS_MOBILE?4:7);i++){
+    const car=new THREE.Group();
+    car.add(new THREE.Mesh(new THREE.BoxGeometry(3.8,1,2), new THREE.MeshStandardMaterial({color:0x1a1a2a,metalness:.95,roughness:.2,emissive:0x110022})));
+    const cab=new THREE.Mesh(new THREE.BoxGeometry(1.9,.9,1.5), new THREE.MeshStandardMaterial({color:0x00bbff,transparent:true,opacity:.65,emissive:0x004466,emissiveIntensity:.5}));
+    cab.position.y=1; car.add(cab);
+    car.add(new THREE.PointLight(0xffaa00,2.5,14)).position.set(2,.4,.5);
+    const a=Math.random()*Math.PI*2, r=48+Math.random()*36;
+    car.position.set(Math.cos(a)*r, .5, Math.sin(a)*r);
+    car.userData={isCar:true,speed:.012+Math.random()*.02,radius:r,angle:a};
+    scene.add(car); installations.push(car);
+  }
+
+  // Temple
+  const temple=new THREE.Group();
+  temple.add(new THREE.Mesh(new THREE.BoxGeometry(12,.8,12), new THREE.MeshStandardMaterial({color:0x0e0e1a,metalness:.7})));
+  for(let i=0;i<4;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.85,10,.85),new THREE.MeshStandardMaterial({color:0xff00aa,emissive:0x440033,emissiveIntensity:.55}));p.position.set((i%2?4:-4),5.2,(i<2?4:-4));temple.add(p)}
+  const roof=new THREE.Mesh(new THREE.ConeGeometry(8,4.5,4),new THREE.MeshStandardMaterial({color:0x00ffff,transparent:true,opacity:.4,emissive:0x003344,emissiveIntensity:.45}));
+  roof.position.y=12; temple.add(roof); temple.position.set(-58,0,-32); scene.add(temple); installations.push(temple);
+
+  // Station pads
+  [{n:'ZPEG',p:[12,0,10],c:0xffff00},{n:'x402',p:[-14,0,18],c:0x00ff88},{n:'Auction',p:[26,0,-20],c:0xff8800}].forEach(s=>{
+    const st=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.6,.3,10), new THREE.MeshStandardMaterial({color:s.c,emissive:s.c,emissiveIntensity:.65,metalness:.8}));
+    st.position.set(s.p[0],.15,s.p[2]); st.userData={station:s.n}; scene.add(st); installations.push(st);
+    scene.add(new THREE.PointLight(s.c,2,12)).position.set(s.p[0],2,s.p[2]);
+  });
+
+  // Load key textures
+  textures.dragon = await loadTex(ASSETS+'dragon.png');
+  textures.panda  = await loadTex(ASSETS+'panda.png');
+  textures.car    = await loadTex(ASSETS+'car.png');
+  for(const n of ['npc_shaman','npc_fox','npc_pilot','npc_engineer','npc_monk','npc_scribe','item_shard','item_spark','fire_patch','rogue_drone','suppress_drone','frost_breath','zpeg']){
+    textures[n] = await loadTex(ASSETS+n+'.png');
+  }
+
+  // Player
+  player = new THREE.Group(); player.position.set(0,0,22); scene.add(player);
+  setChar('dragon');
+
+  // Player cyber car (mountable) — big awesome sprite
+  carGroup = new THREE.Group();
+  carMesh = new THREE.Sprite(new THREE.SpriteMaterial({map:textures.car, transparent:true, alphaTest:.08, depthWrite:false}));
+  carMesh.scale.set(5.5, 3.1, 1);
+  carMesh.position.y = 1.4;
+  carGroup.add(carMesh);
+  carGroup.add(new THREE.PointLight(0xff00ff, 3, 18)).position.set(0,1.5,0);
+  carGroup.add(new THREE.PointLight(0x00ffff, 2.5, 14)).position.set(-2,1,0);
+  carGroup.position.set(8, 0, 18);
+  carGroup.userData = {isPlayerCar:true, speed:0, yaw:0};
+  scene.add(carGroup);
+
+  // Controls
+  controls = new PointerLockControls(camera, document.body);
+  scene.add(controls.getObject());
+  controls.getObject().position.set(0,1.7,22);
+
+  // NPCs
+  const NPCS = [
+    {name:'Neon Shaman',t:'Welcome traveler. Collect 3 Neon Shards near the fiber forest and return. I will teach Zero-Point.',need:{'neon-shard':3},rew:30,spr:'npc_shaman'},
+    {name:'Chrome Fox',t:'Dragon & Panda rule this Playa. Find a Quantum Spark and I open a deal.',need:{'quantum-spark':1},rew:40,spr:'npc_fox'},
+    {name:'Dust Runner',t:'Art cars need fuel. Bring 2 Dust Cores.',need:{'dust-core':2},rew:35,spr:'npc_pilot'},
+    {name:'ZPEG Eng',t:'Place a ZPEG near The Man. I give you a kit if you have a Circuit Board.',need:{'circuit-board':1},rew:50,spr:'npc_engineer',gift:'zpeg-kit'},
+    {name:'Laser Monk',t:'The Man holds our dream. Defend it when arsonists come.',need:{},rew:0,spr:'npc_monk'},
+    {name:'Holo Scribe',t:'Leave no trace… except code. Collect Fiber Coils for the archive.',need:{'fiber-coil':2},rew:25,spr:'npc_scribe'}
+  ];
+  NPCS.forEach((d,i)=>{
+    const mat=new THREE.SpriteMaterial({map:textures[d.spr]||textures.npc_shaman,transparent:true,alphaTest:.1,depthWrite:false});
+    const spr=new THREE.Sprite(mat); spr.scale.set(2,3,1);
+    const a=(i/NPCS.length)*Math.PI*2+.1, r=12+(i%4)*7;
+    spr.position.set(Math.cos(a)*r,1.5,Math.sin(a)*r);
+    spr.userData={...d, done:false, phase:Math.random()*Math.PI*2, isNPC:true};
+    scene.add(spr); npcs.push(spr);
+  });
+
+  // Collectibles
+  const IKEYS = ['neon-shard','fiber-coil','dust-core','quantum-spark','circuit-board','plasma-vial','token-chip','zpeg-kit'];
+  for(let i=0;i<(IS_MOBILE?28:45);i++){
+    const key=IKEYS[i%IKEYS.length];
+    let mesh;
+    if(key==='neon-shard'||key==='quantum-spark'){
+      mesh=new THREE.Sprite(new THREE.SpriteMaterial({map:textures[key==='neon-shard'?'item_shard':'item_spark'],transparent:true,alphaTest:.05,blending:THREE.AdditiveBlending,depthWrite:false}));
+      mesh.scale.set(.8,.8,1);
+    }else{
+      mesh=new THREE.Mesh(new THREE.OctahedronGeometry(.32+Math.random()*.15,0), new THREE.MeshStandardMaterial({color:NEON[i%7],emissive:NEON[i%7],emissiveIntensity:.85,metalness:.7,transparent:true,opacity:.9}));
+    }
+    const a=Math.random()*Math.PI*2, r=9+Math.random()*70;
+    mesh.position.set(Math.cos(a)*r, .65+Math.random(), Math.sin(a)*r);
+    mesh.userData={key, phase:Math.random()*Math.PI*2};
+    scene.add(mesh); items.push(mesh);
+  }
+
+  // Events
+  window.addEventListener('resize', onResize);
+  document.addEventListener('keydown', e=>{keys[e.code]=true; if(e.code==='Tab')e.preventDefault(); onKey(e,true)});
+  document.addEventListener('keyup', e=>{keys[e.code]=false});
+  document.getElementById('c').addEventListener('click', ()=>{if(!dlg) controls.lock()});
+  controls.addEventListener('lock', ()=>locked=true);
+  controls.addEventListener('unlock', ()=>locked=false);
+  document.getElementById('dx').onclick = closeDlg;
+  document.getElementById('fs').onclick = ()=>{const el=document.documentElement; if(!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.()};
+  document.getElementById('btn-controls').onclick=()=>{ if(window.DPControls){ DPControls.ensureStyles(); DPControls.openMapper(); } };
+  if(window.DPControls) DPControls.ensureStyles();
+
+  // Title cards
+  document.querySelectorAll('.card').forEach(c=>{
+    c.onclick=()=>{document.querySelectorAll('.card').forEach(x=>x.classList.remove('on'));c.classList.add('on');char=c.dataset.c;document.getElementById('go').disabled=false};
+  });
+  document.getElementById('go').onclick=startGame;
+
+  // Mobile controls
+  if(IS_MOBILE){
+    document.getElementById('stick').style.display='block';
+    document.getElementById('btns').style.display='flex';
+    setupStick();
+    document.getElementById('bE').ontouchstart=e=>{e.preventDefault();interact()};
+    document.getElementById('bR').ontouchstart=e=>{e.preventDefault();ability()};
+    document.getElementById('bF').ontouchstart=e=>{e.preventDefault(); if(char==='dragon') toggleFly(); else toggleDrive()};
+    document.getElementById('bJ').ontouchstart=e=>{e.preventDefault(); if(canJump&&!flying){vel.y=7.5;canJump=false;beep(220,.06)}};
+  }
+
+  clock = new THREE.Clock();
+  document.getElementById('load').style.display='none';
+  animate();
+}
+
+function setChar(c){
+  char=c;
+  if(pMesh){player.remove(pMesh); pMesh.material.dispose()}
+  const tex = c==='dragon' ? textures.dragon : textures.panda;
+  pMesh = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true, alphaTest:.08, depthWrite:false}));
+  pMesh.scale.set(c==='dragon'?2.3:2.0, c==='dragon'?3.4:3.1, 1);
+  pMesh.position.y=1.65; player.add(pMesh);
+  document.getElementById('aname').textContent = c==='dragon' ? 'DRAGON' : 'CYBER PANDA';
+}
+
+function startGame(){
+  setChar(char);
+  document.getElementById('title').style.opacity='0';
+  setTimeout(()=>{
+    document.getElementById('title').style.display='none';
+    document.getElementById('ui').style.display='flex';
+    toast(`Welcome as ${char.toUpperCase()}! ${IS_MOBILE?'Use stick + buttons.':'Click canvas to look.'}`);
+    beep(520,.1,'sine',.05);
+  },600);
+}
+
+// ========== INPUT ==========
+function onKey(e,down){
+  if(!down) return;
+  switch(e.code){
+    case 'KeyE': interact(); break;
+    case 'KeyF': toggleFly(); break;
+    case 'KeyV': toggleDrive(); break;
+    case 'KeyR': ability(); break;
+    case 'Digit1': setChar('dragon'); toast('🐉 DRAGON'); break;
+    case 'Digit2': setChar('panda'); toast('🐼 CYBER PANDA'); break;
+    case 'Space': if(flying) vel.y+=3.5; else if(canJump){vel.y=7.8;canJump=false;beep(200,.05)} break;
+    case 'Escape': if(dlg) closeDlg(); break;
+  }
+}
+
+function setupStick(){
+  const st=document.getElementById('stick'), kn=document.getElementById('knob');
+  const max=32;
+  function set(x,y){
+    const l=Math.hypot(x,y)||1; const cl=Math.min(l,max);
+    stickV.x=(x/l)*cl/max; stickV.y=(y/l)*cl/max;
+    kn.style.left=(33+stickV.x*max)+'px'; kn.style.top=(33+stickV.y*max)+'px';
+  }
+  st.ontouchstart=st.ontouchmove=e=>{
+    e.preventDefault(); stickActive=true;
+    const t=e.touches[0], r=st.getBoundingClientRect();
+    set(t.clientX-r.left-55, t.clientY-r.top-55);
+  };
+  st.ontouchend=()=>{stickActive=false; stickV.x=stickV.y=0; kn.style.left='33px'; kn.style.top='33px'};
+}
+
+// ========== ACTIONS ==========
+function toggleFly(){
+  if(char!=='dragon'){toast('Only Dragon flies (Panda drives the car with V)');return}
+  if(driving) return;
+  flying=!flying;
+  if(flying){toast('🐉 Flight — Space climb'); beep(660,.08)}
+  else {controls.getObject().position.y=1.7; toast('Landed')}
+}
+
+function toggleDrive(){
+  if(flying) return;
+  const dist = player.position.distanceTo(carGroup.position);
+  if(!driving){
+    if(dist>6){toast('Get closer to the cyber car (purple neon)');return}
+    driving=true; toast('🚗 Driving cyber car — WASD / stick to drive'); beep(180,.1,'sawtooth',.04);
+    pMesh.visible=false;
+  }else{
+    driving=false; pMesh.visible=true;
+    // exit beside car
+    player.position.copy(carGroup.position); player.position.x+=3;
+    controls.getObject().position.x=player.position.x; controls.getObject().position.z=player.position.z;
+    toast('Exited vehicle');
+  }
+}
+
+function ability(){
+  if(coolF>0){toast('Recharging…');return}
+  coolF=2;
+  if(char==='dragon' || flying){
+    // frost
+    if(textures.frost_breath){
+      const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.frost_breath,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
+      s.scale.set(5.5,3,1);
+      const d=new THREE.Vector3(); camera.getWorldDirection(d);
+      s.position.copy(controls.getObject().position).add(d.multiplyScalar(3.5));
+      scene.add(s); setTimeout(()=>scene.remove(s),650);
+    }
+    // clear fires + hit
+    const pos=player.position.clone(); pos.y=1.5;
+    for(let i=fires.length-1;i>=0;i--) if(pos.distanceTo(fires[i].position)<11){scene.remove(fires[i]);fires.splice(i,1);manHP=Math.min(100,manHP+5)}
+    hitFront(13,40); toast('❄️ Frost breath!'); beep(880,.12,'sine',.05);
+  }else{
+    // panda suppress
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.suppress_drone||null,transparent:true,alphaTest:.1,depthWrite:false,color:textures.suppress_drone?0xffffff:0x00aaff}));
+    s.scale.set(1.3,1.3,1); s.position.copy(player.position); s.position.y=2.8;
+    s.userData={life:35, isSupp:true}; scene.add(s); drones.push(s);
+    toast('🚁 Suppress drone out'); beep(440,.1);
+  }
+  updateUI();
+}
+
+function hitFront(range,dmg){
+  const pos=controls.getObject().position.clone();
+  const d=new THREE.Vector3(); camera.getWorldDirection(d);
+  for(let i=drones.length-1;i>=0;i--){
+    const o=drones[i]; if(o.userData.isSupp) continue;
+    const to=o.position.clone().sub(pos); if(to.length()<range && to.normalize().dot(d)>.4){
+      o.userData.hp=(o.userData.hp||25)-dmg;
+      if(o.userData.hp<=0){scene.remove(o);drones.splice(i,1);tokens+=8;toast('+8 tokens');beep(600,.05)}
+    }
+  }
+  for(let i=enemies.length-1;i>=0;i--){
+    const o=enemies[i]; const to=o.position.clone().sub(pos);
+    if(to.length()<range+1 && to.normalize().dot(d)>.3){
+      o.userData.hp=(o.userData.hp||40)-dmg;
+      if(o.userData.hp<=0){scene.remove(o);enemies.splice(i,1);tokens+=12;toast('Arsonist down +12');beep(300,.08)}
+    }
+  }
+}
+
+function interact(){
+  const pos=player.position.clone(); pos.y=1.5;
+  // fires
+  for(let i=fires.length-1;i>=0;i--) if(pos.distanceTo(fires[i].position)<2.6){
+    scene.remove(fires[i]);fires.splice(i,1);manHP=Math.min(100,manHP+6);toast('🔥 Fire out +6');updateUI();beep(200,.06);return;
+  }
+  // items
+  for(let i=items.length-1;i>=0;i--){
+    const c=items[i]; if(pos.distanceTo(c.position)<2.4){
+      inventoryAdd(c.userData.key); scene.remove(c); items.splice(i,1);
+      toast('Collected '+c.userData.key); beep(700,.05); updateUI(); checkPhase(); return;
+    }
+  }
+  // Man
+  if(pos.distanceTo(theMan.position)<15){
+    if(phase==='burn'||(phase==='defend'&&enemies.length===0&&fires.length===0)){
+      openDlg('The Man','Ready for the final Burn?',[{l:'🔥 BURN THE MAN',a:finalBurn}]);
+    }else openDlg('The Man','Place ZPEGs, collect, then defend me from arsonists. Only then may we Burn.');
+    return;
+  }
+  // gens
+  for(const g of gens) if(pos.distanceTo(g.position)<3){
+    const p=Math.floor(g.userData.prod||0);
+    if(p<1){toast('Still charging…');return}
+    tokens+=p; g.userData.prod=0; toast('⚡ +'+p+' tokens'); updateUI(); beep(520,.08); return;
+  }
+  // stations
+  for(const inst of installations) if(inst.userData.station && pos.distanceTo(inst.position)<3.5){
+    if(inst.userData.station==='ZPEG') placeZpeg();
+    else if(inst.userData.station==='x402'){ if(tokens>=10){tokens-=10;const e=12+Math.floor(Math.random()*20);tokens+=e;toast('💰 x402 +'+e);updateUI()} else toast('Need 10 tokens')}
+    else toast(inst.userData.station+' online');
+    return;
+  }
+  // NPC
+  let near=null,md=5.5;
+  for(const n of npcs){const d=pos.distanceTo(n.position);if(d<md){md=d;near=n}}
+  if(near){
+    const u=near.userData;
+    const need=u.need&&Object.keys(u.need).length? '\n\n[Quest] Need: '+Object.entries(u.need).map(([k,v])=>v+'× '+k).join(', '):'';
+    const acts=[];
+    if(u.need && !u.done && Object.keys(u.need).length) acts.push({l:'Turn in',a:()=>turnIn(near)});
+    openDlg(u.name, u.t+need, acts);
+    return;
+  }
+  // car
+  if(pos.distanceTo(carGroup.position)<6){toggleDrive();return}
+  toast('Nothing nearby — collect glowies, talk, or approach The Man / car');
+}
+
+const inv = Object.create(null);
+function inventoryAdd(k){inv[k]=(inv[k]||0)+1}
+function inventoryHas(need){for(const[k,v]of Object.entries(need)) if((inv[k]||0)<v) return false; return true}
+function inventorySpend(need){for(const[k,v]of Object.entries(need)) inv[k]-=v}
+
+function turnIn(npc){
+  const u=npc.userData; if(u.done) return;
+  if(!inventoryHas(u.need)){toast('Missing items');return}
+  inventorySpend(u.need); u.done=true; questsDone++;
+  tokens+=u.rew||0; if(u.gift) inventoryAdd(u.gift);
+  toast('✅ Quest done +'+(u.rew||0)); closeDlg(); updateUI(); checkPhase(); beep(880,.1,'sine',.06);
+}
+
+function placeZpeg(){
+  if((inv['zpeg-kit']||0)<1){toast('Need ZPEG Kit (from quests)');return}
+  inv['zpeg-kit']--;
+  let g;
+  if(textures.zpeg){g=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.zpeg,transparent:true,alphaTest:.1,depthWrite:false}));g.scale.set(2.2,2.2,1)}
+  else g=new THREE.Mesh(new THREE.CylinderGeometry(1,1.2,2,8),new THREE.MeshStandardMaterial({color:0xffff00,emissive:0xffaa00,emissiveIntensity:.8}));
+  g.position.set(player.position.x+2.2,1.1,player.position.z);
+  g.userData={prod:0,rate:.2}; scene.add(g); gens.push(g); installations.push(g); zpegs++;
+  scene.add(new THREE.PointLight(0xffff00,3.5,16)).position.copy(g.position).y+=2.5;
+  toast('⚡ ZPEG placed'); updateUI(); checkPhase(); beep(400,.1);
+}
+
+function checkPhase(){
+  if(phase==='collect' && (zpegs>=1 || tokens>=50 || questsDone>=2)){
+    setPhase('drone'); spawnDrones(5); banner('PHASE 2: Rogue drones — F fly · R frost · Click attack');
+  }
+  if(phase==='drone' && drones.filter(d=>!d.userData.isSupp).length===0 && (tokens>=80||zpegs>=2||questsDone>=3)){
+    setPhase('defend'); document.getElementById('manbar').style.display='block';
+    spawnEnemies(4); banner('PHASE 3: DEFEND THE MAN — stomp fires · eliminate arsonists');
+  }
+  if(phase==='defend' && enemies.length===0 && fires.length===0 && manHP>15){
+    setPhase('burn'); banner('PHASE 4: THE BURN — Approach The Man');
+  }
+}
+
+function spawnDrones(n){
+  for(let i=0;i<n;i++){
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.rogue_drone||null,transparent:true,alphaTest:.1,depthWrite:false,color:textures.rogue_drone?0xffffff:0xff2200}));
+    s.scale.set(1.5,1.5,1);
+    const a=Math.random()*Math.PI*2,r=22+Math.random()*35;
+    s.position.set(Math.cos(a)*r,3.5+Math.random()*5,Math.sin(a)*r);
+    s.userData={hp:28,phase:Math.random()*Math.PI*2,spd:.018+Math.random()*.015}; scene.add(s); drones.push(s);
+  }
+  toast(n+' rogue drones!');
+}
+
+function spawnEnemies(n){
+  for(let i=0;i<n;i++){
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.npc_engineer||textures.npc_fox,transparent:true,alphaTest:.1,depthWrite:false,color:0xff6666}));
+    s.scale.set(1.9,2.9,1);
+    const a=Math.random()*Math.PI*2,r=35+Math.random()*25;
+    s.position.set(Math.cos(a)*r,1.5,Math.sin(a)*r);
+    s.userData={hp:42,ft:2+Math.random()*3,phase:Math.random()*Math.PI*2}; scene.add(s); enemies.push(s);
+  }
+  toast(n+' arsonists!');
+}
+
+function spawnFire(){
+  if(fires.length>10) return;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire_patch||null,transparent:true,alphaTest:.04,blending:THREE.AdditiveBlending,depthWrite:false,color:textures.fire_patch?0xffffff:0xff4400}));
+  s.scale.set(2,2,1);
+  const a=Math.random()*Math.PI*2,r=3+Math.random()*9;
+  s.position.set(Math.cos(a)*r,.35,Math.sin(a)*r);
+  s.userData={phase:Math.random()*Math.PI*2}; scene.add(s); fires.push(s);
+  manHP=Math.max(0,manHP-3); updateUI();
+}
+
+function finalBurn(){
+  closeDlg(); setPhase('complete');
+  for(let i=0;i<18;i++) setTimeout(()=>{
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire_patch||null,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:textures.fire_patch?0xffffff:0xff6600}));
+    s.scale.set(3+Math.random()*3,3+Math.random()*3,1);
+    s.position.set((Math.random()-.5)*7,2+Math.random()*16,(Math.random()-.5)*5);
+    theMan.add(s);
+  },i*100);
+  theMan.add(new THREE.PointLight(0xff6600,22,90)).position.y=12;
+  tokens+=400; banner('🔥 THE BURN — Radical self-expression. Festival complete. +400 tokens');
+  toast('You lit The Man. Thank you for playing!'); updateUI(); beep(220,.3,'sine',.08);
+}
+
+function openDlg(name,text,acts=[]){
+  dlg=true; document.getElementById('dn').textContent=name; document.getElementById('dt').textContent=text;
+  const da=document.getElementById('da'); da.innerHTML='';
+  acts.forEach(a=>{const b=document.createElement('button');b.textContent=a.l;b.onclick=a.a;da.appendChild(b)});
+  document.getElementById('dlg').style.display='block'; controls.unlock();
+}
+function closeDlg(){dlg=false; document.getElementById('dlg').style.display='none'}
+
+function updateUI(){
+  document.getElementById('tok').textContent=tokens.toLocaleString();
+  document.getElementById('mf').style.width=manHP+'%';
+}
+
+// ========== ANIMATE ==========
+let fireT=0, arsonT=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),.05), t=clock.getElapsedTime();
+  if(coolF>0) coolF-=dt; if(coolA>0) coolA-=dt;
+  if(window.DPControls){ DPControls.tick();
+    // Xbox / remapped actions
+    if(DPControls.wasPressed('interact')) interact();
+    if(DPControls.wasPressed('fly')) toggleFly();
+    if(DPControls.wasPressed('drive')) toggleDrive();
+    if(DPControls.wasPressed('ability')) ability();
+    if(DPControls.wasPressed('avatar1')) { setChar('dragon'); toast('🐉 DRAGON'); }
+    if(DPControls.wasPressed('avatar2')) { setChar('panda'); toast('🐼 CYBER PANDA'); }
+    if(DPControls.wasPressed('jump') && canJump && !flying){ vel.y=7.8; canJump=false; beep(200,.05); }
+    if(DPControls.isDown('shoot') && locked && !dlg && coolA<=0 && (phase==='drone'||phase==='defend')){ coolA=.4; hitFront(8,20); beep(900,.04); }
+    // look with right stick when pad connected
+    const ax=DPControls.getAxes();
+    if(DPControls.padConnected() && locked && !dlg){
+      const yaw = ax.rx * 2.2 * dt;
+      const pitch = ax.ry * 1.6 * dt;
+      controls.getObject().rotation.y -= yaw;
+      camera.rotation.x = Math.max(-1.2, Math.min(1.2, camera.rotation.x - pitch));
+    }
+  }
+
+  // Movement
+  if((locked||IS_MOBILE) && !dlg){
+    vel.x-=vel.x*9*dt; vel.z-=vel.z*9*dt;
+    if(!flying) vel.y-=17*dt; else vel.y-=vel.y*2.5*dt;
+
+    let mx=0,mz=0;
+    if(keys.KeyW||keys.ArrowUp) mz-=1; if(keys.KeyS||keys.ArrowDown) mz+=1;
+    if(keys.KeyA||keys.ArrowLeft) mx-=1; if(keys.KeyD||keys.ArrowRight) mx+=1;
+    if(IS_MOBILE && stickActive){mx+=stickV.x; mz+=stickV.y}
+    if(window.DPControls){ const mv=DPControls.getMoveVector(); if(Math.abs(mv.rawX)>0.15||Math.abs(mv.rawY)>0.15){ mx+=mv.rawX; mz+=mv.rawY; } }
+    const len=Math.hypot(mx,mz)||1; mx/=len; mz/=len;
+
+    if(driving){
+      // vehicle physics
+      const car=carGroup;
+      const turn = mx * 1.8 * dt;
+      car.userData.yaw -= turn;
+      car.rotation.y = car.userData.yaw;
+      const accel = -mz * 28 * dt; // forward is -Z in local? 
+      car.userData.speed += accel;
+      car.userData.speed *= (1-1.8*dt); // friction
+      car.userData.speed = Math.max(-12, Math.min(22, car.userData.speed));
+      car.position.x += Math.sin(car.userData.yaw) * car.userData.speed * dt;
+      car.position.z += Math.cos(car.userData.yaw) * car.userData.speed * dt;
+      // keep player/camera with car
+      player.position.copy(car.position);
+      controls.getObject().position.x = car.position.x;
+      controls.getObject().position.z = car.position.z;
+      controls.getObject().position.y = 2.2;
+      // slight camera follow yaw optional: keep free look
+    }else{
+      const spd = flying ? 62 : 42;
+      if(mx||mz){ vel.x -= mx * spd * dt; vel.z -= mz * spd * dt }
+      controls.moveRight(-vel.x*dt); controls.moveForward(-vel.z*dt);
+      if(flying){
+        controls.getObject().position.y += vel.y*dt;
+        if(controls.getObject().position.y<2){controls.getObject().position.y=2;vel.y=0}
+        if(controls.getObject().position.y>38){controls.getObject().position.y=38;vel.y=0}
+      }else{
+        controls.getObject().position.y += vel.y*dt;
+        if(controls.getObject().position.y<1.7){vel.y=0;controls.getObject().position.y=1.7;canJump=true}
+      }
+      player.position.x=controls.getObject().position.x;
+      player.position.z=controls.getObject().position.z;
+      player.position.y=flying?controls.getObject().position.y-1.4:0;
+    }
+    if(pMesh) pMesh.visible = !locked || flying || !driving;
+  }else if(pMesh) pMesh.visible=true;
+
+  // Installations
+  installations.forEach(o=>{
+    if(o.userData.float){o.position.y=o.userData.baseY+Math.sin(t*1.2+o.userData.phase)*.65; o.rotation.y+=.008}
+    if(o.userData.isCar){o.userData.angle+=o.userData.speed*dt; o.position.x=Math.cos(o.userData.angle)*o.userData.radius; o.position.z=Math.sin(o.userData.angle)*o.userData.radius; o.rotation.y=o.userData.angle+Math.PI/2}
+  });
+  // Man rings
+  theMan.children.forEach(c=>{ if(c.geometry?.type==='TorusGeometry') c.rotation.z=t*(.25+c.position.y*.01)});
+
+  npcs.forEach(n=>n.position.y=1.5+Math.sin(t*1.8+n.userData.phase)*.09);
+  items.forEach(c=>{c.position.y=.7+Math.sin(t*2.2+c.userData.phase)*.25; if(c.rotation) c.rotation.y+=.02});
+  gens.forEach(g=>{g.userData.prod=(g.userData.prod||0)+g.userData.rate*dt});
+
+  // Rogue drones (non-suppress)
+  drones.forEach(d=>{
+    if(d.userData.isSupp){
+      d.userData.life-=dt; d.position.y=2.4+Math.sin(t*3)*.35;
+      if(d.userData.life<=0){scene.remove(d); return}
+      if(fires.length){
+        const f=fires[0]; const dir=f.position.clone().sub(d.position); dir.y=0;
+        if(dir.length()<2.2){scene.remove(f);fires.shift();manHP=Math.min(100,manHP+5);toast('🚁 Fire out');updateUI()}
+        else{dir.normalize().multiplyScalar(7*dt); d.position.x+=dir.x; d.position.z+=dir.z}
+      }
+    }else{
+      d.position.y=3.5+Math.sin(t*2+d.userData.phase)*1.3;
+      const to=player.position.clone().sub(d.position); if(to.length()>2.5){to.normalize().multiplyScalar(d.userData.spd*55*dt); d.position.x+=to.x; d.position.z+=to.z}
+    }
+  });
+  drones = drones.filter(d=>d.parent);
+
+  // Enemies
+  if(phase==='defend'){
+    arsonT+=dt; if(arsonT>5 && enemies.length<6){arsonT=0; spawnEnemies(1)}
+    fireT+=dt; if(fireT>2.2){fireT=0; spawnFire()}
+    enemies.forEach(e=>{
+      e.position.y=1.5+Math.sin(t*2+e.userData.phase)*.08;
+      const to=theMan.position.clone().sub(e.position); to.y=0;
+      if(to.length()>8){to.normalize().multiplyScalar(3.2*dt); e.position.x+=to.x; e.position.z+=to.z}
+      else {e.userData.ft-=dt; if(e.userData.ft<=0){e.userData.ft=3+Math.random()*2; spawnFire()}}
+    });
+  }
+
+  // Dust drift
+  if(dust){
+    const a=dust.geometry.attributes.position.array;
+    for(let i=0;i<a.length;i+=3){a[i]+=Math.sin(t+i)*.008; a[i+2]+=Math.cos(t+i*.4)*.006; if(a[i]>90)a[i]=-90; if(a[i+2]>90)a[i+2]=-90}
+    dust.geometry.attributes.position.needsUpdate=true;
+  }
+
+  // Attack on click (desktop)
+  if(keys.Mouse0 && locked && !dlg && coolA<=0 && (phase==='drone'||phase==='defend')){
+    coolA=.4; hitFront(8,20); beep(900,.04);
+  }
+
+  renderer.render(scene, camera);
+}
+
+function onResize(){
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+}
+
+// Click attack helper
+document.addEventListener('mousedown', e=>{ if(e.button===0) keys.Mouse0=true });
+document.addEventListener('mouseup', e=>{ if(e.button===0) keys.Mouse0=false });
+
+init().catch(e=>{console.error(e); document.getElementById('load').innerHTML='<div style="color:#f66">Load failed — check console</div>'});
+</script>
+</body>
+</html>
