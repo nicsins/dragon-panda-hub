@@ -3,760 +3,722 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0a0020">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<title>Cyberpunk Burning Man — Dragon & Panda v2</title>
-
-<link rel="stylesheet" href="../css/hub.css">
+<meta name="theme-color" content="#050018">
+<title>Dragon & Panda — Plaza LIT (Third-Person)</title>
 <script src="../js/controls.js"></script>
-
 <style>
-:root{--c:#0ff;--m:#f0f;--bg:#030012}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);font-family:system-ui,-apple-system,sans-serif;color:var(--c);touch-action:none}
+html,body{width:100%;height:100%;overflow:hidden;background:#020010;font-family:system-ui,sans-serif;color:#0ff;touch-action:none}
 #c{position:fixed;inset:0;display:block}
-#ui{position:fixed;inset:0;pointer-events:none;z-index:10;display:none;flex-direction:column}
-#hud{padding:max(10px,env(safe-area-inset-top)) 12px 0;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent)}
-.box{background:rgba(0,12,30,.88);border:1px solid #0ff5;border-radius:10px;padding:7px 11px;backdrop-filter:blur(8px);box-shadow:0 0 16px #0ff3;pointer-events:auto;font-size:.8rem}
-#title{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 40%,#1a0038 0%,#000 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;pointer-events:auto;transition:opacity .7s}
-#title h1{font-size:clamp(1.6rem,5vw,2.8rem);background:linear-gradient(90deg,#f0f,#0ff,#f0f);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;letter-spacing:1px;margin-bottom:.4rem}
-#title .sub{color:#9cf;font-size:.88rem;text-align:center;max-width:560px;line-height:1.4;margin-bottom:1.2rem}
-.chars{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-bottom:1rem}
-.card{width:min(180px,42vw);cursor:pointer;text-align:center;background:rgba(0,20,45,.7);border:2px solid #0ff5;border-radius:14px;padding:10px;transition:transform .25s,box-shadow .25s;box-shadow:0 0 24px #0ff3}
-.card:hover,.card.on{transform:scale(1.06);border-color:#f0f;box-shadow:0 0 40px #f0f8}
-.card img{width:100%;height:200px;object-fit:contain;border-radius:8px;background:linear-gradient(180deg,#0a0520,#000)}
-.card h3{margin-top:8px;color:#0ff;font-size:1.05rem}
-.card p{color:#aaf;font-size:.72rem;margin-top:2px}
-#go{padding:13px 36px;font-size:1.05rem;font-weight:700;background:linear-gradient(90deg,#f0f,#0ff);color:#000;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 30px #f0f8;margin-top:.5rem}
+#ui{position:fixed;inset:0;pointer-events:none;z-index:10;display:none}
+#hud{padding:max(10px,env(safe-area-inset-top)) 12px 0;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;background:linear-gradient(to bottom,rgba(0,0,25,.92),transparent 85%)}
+.box{background:linear-gradient(135deg,rgba(25,0,55,.9),rgba(0,20,45,.85));border:1px solid #0ff7;border-radius:12px;padding:8px 12px;backdrop-filter:blur(10px);box-shadow:0 0 18px #f0f4,inset 0 0 16px #0ff1;pointer-events:auto;font-size:.78rem}
+.box .lab{font-size:.55rem;letter-spacing:.12em;color:#8af;text-transform:uppercase}
+.box .val{font-weight:800;font-size:1.05rem;background:linear-gradient(90deg,#f0f,#0ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#title{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 25%,#1a0055 0%,#050018 55%,#000 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;pointer-events:auto}
+#title h1{font-size:clamp(1.5rem,5vw,2.8rem);background:linear-gradient(90deg,#f0f,#0ff,#f0f);-webkit-background-clip:text;background-clip:text;color:transparent;text-align:center;letter-spacing:1px}
+#title .sub{color:#b8f;font-size:.9rem;text-align:center;max-width:560px;margin:10px 0 16px;line-height:1.45}
+.chars{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.card{width:min(180px,42vw);cursor:pointer;text-align:center;background:linear-gradient(180deg,rgba(40,0,70,.75),rgba(0,10,30,.9));border:2px solid #0ff5;border-radius:16px;padding:10px;transition:.2s}
+.card:hover,.card.on{transform:scale(1.06);border-color:#f0f;box-shadow:0 0 40px #f0f9}
+.card img{width:100%;height:190px;object-fit:contain;border-radius:10px;background:radial-gradient(circle at 50% 70%,#1a0a40,#000)}
+.card h3{margin-top:8px;color:#0ff}
+.card p{color:#aaf;font-size:.7rem;margin-top:2px}
+#go{margin-top:14px;padding:14px 44px;font-size:1.1rem;font-weight:800;background:linear-gradient(90deg,#f0f,#0ff);color:#000;border:none;border-radius:50px;cursor:pointer;box-shadow:0 0 36px #f0f8}
 #go:disabled{opacity:.35;cursor:not-allowed}
-#go:not(:disabled):hover{transform:scale(1.04)}
-#load{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.spin{width:48px;height:48px;border:3px solid #0ff3;border-top-color:#f0f;border-radius:50%;animation:s .85s linear infinite}
+#load{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.spin{width:50px;height:50px;border:3px solid #0ff3;border-top-color:#f0f;border-radius:50%;animation:s .8s linear infinite}
 @keyframes s{to{transform:rotate(360deg)}}
-#toast{position:absolute;top:70px;left:50%;transform:translateX(-50%);background:rgba(0,25,55,.95);border:1px solid #0ff;padding:9px 16px;border-radius:10px;display:none;z-index:40;max-width:90%;text-align:center;font-size:.88rem;box-shadow:0 0 20px #0ff5}
-#dlg{position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(620px,92%);background:rgba(0,8,22,.96);border:1px solid #0ff;border-radius:12px;padding:14px 16px;display:none;pointer-events:auto;z-index:30;box-shadow:0 0 36px #0ff5}
-#dlg h4{color:#f0f;margin-bottom:6px;display:flex;justify-content:space-between}
-#dlg p{color:#dff;font-size:.9rem;line-height:1.4;white-space:pre-wrap}
-#dlg .x{cursor:pointer;font-size:1.25rem;color:#0ff}
-#dlg .acts{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
-#dlg button{padding:7px 12px;background:linear-gradient(90deg,#0ff3,#f0f3);border:1px solid #0ff;color:#fff;border-radius:8px;cursor:pointer;font-size:.82rem}
-#help{position:absolute;bottom:max(8px,env(safe-area-inset-bottom));left:8px;font-size:.65rem;color:#8cf;background:rgba(0,0,0,.55);padding:4px 8px;border-radius:6px;max-width:min(360px,70vw);line-height:1.3}
+#toast{position:absolute;top:76px;left:50%;transform:translateX(-50%);background:rgba(10,0,40,.95);border:1px solid #f0f;padding:10px 16px;border-radius:12px;display:none;z-index:40;max-width:92%;text-align:center;box-shadow:0 0 20px #f0f6;font-size:.88rem}
+#help{position:absolute;bottom:max(8px,env(safe-area-inset-bottom));left:8px;font-size:.62rem;color:#9cf;background:rgba(0,0,20,.7);padding:6px 10px;border-radius:8px;max-width:min(440px,80vw);line-height:1.35;border:1px solid #0ff3}
 #manbar{position:absolute;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:min(280px,70%);display:none;z-index:20}
-#manbar label{font-size:.6rem;color:#f88;display:block;text-align:center;margin-bottom:2px}
-#manbar .b{height:9px;background:#300;border-radius:5px;overflow:hidden;border:1px solid #f44}
-#manbar .f{height:100%;width:100%;background:linear-gradient(90deg,#0f8,#ff0,#f40);transition:width .25s}
-#phase{position:absolute;top:90px;left:50%;transform:translateX(-50%);background:rgba(40,0,55,.92);border:1px solid #f0f;padding:7px 14px;border-radius:18px;display:none;z-index:25;font-size:.8rem;color:#f0f;text-align:center;max-width:90%;box-shadow:0 0 24px #f0f6}
-/* Mobile virtual stick */
-#stick{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));left:20px;width:110px;height:110px;border-radius:50%;background:rgba(0,40,80,.35);border:2px solid #0ff4;display:none;pointer-events:auto;touch-action:none;z-index:15}
-#knob{position:absolute;width:44px;height:44px;border-radius:50%;background:rgba(0,255,255,.45);border:2px solid #0ff;left:33px;top:33px;pointer-events:none}
-#btns{position:absolute;bottom:max(24px,env(safe-area-inset-bottom));right:16px;display:none;flex-direction:column;gap:10px;pointer-events:auto;z-index:15}
-.mbtn{width:52px;height:52px;border-radius:50%;background:rgba(0,30,60,.7);border:2px solid #0ff6;color:#0ff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;user-select:none}
-.mbtn:active{background:#0ff4;color:#000}
-#fs{position:absolute;top:max(10px,env(safe-area-inset-top));right:10px;z-index:50;pointer-events:auto;background:rgba(0,20,40,.7);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer}
+#manbar label{font-size:.6rem;color:#f8a;display:block;text-align:center;letter-spacing:.1em;margin-bottom:2px}
+#manbar .b{height:9px;background:#200;border-radius:6px;overflow:hidden;border:1px solid #f46}
+#manbar .f{height:100%;width:100%;background:linear-gradient(90deg,#0f8,#ff0,#f40);transition:width .2s}
+#phase{position:absolute;top:92px;left:50%;transform:translateX(-50%);background:rgba(40,0,60,.95);border:1px solid #f0f;padding:8px 14px;border-radius:18px;display:none;z-index:25;font-size:.8rem;color:#f0f;text-align:center;max-width:90%;box-shadow:0 0 24px #f0f7}
+#quest{position:absolute;top:max(70px,env(safe-area-inset-top)+50px);left:10px;width:min(260px,70vw);background:rgba(5,0,25,.88);border:1px solid #0ff5;border-radius:12px;padding:10px;font-size:.72rem;z-index:20;display:none}
+#quest h4{color:#f0f;margin-bottom:6px;font-size:.75rem;letter-spacing:.08em}
+#quest li{margin:4px 0;color:#9cf;list-style:none}
+#quest li.done{color:#0f8;text-decoration:line-through}
+#quest li.cur{color:#0ff;font-weight:700}
+#dlg{position:absolute;bottom:max(70px,env(safe-area-inset-bottom)+50px);left:50%;transform:translateX(-50%);width:min(520px,94%);background:rgba(8,0,30,.96);border:2px solid #f0f;border-radius:16px;padding:14px 16px;display:none;z-index:50;pointer-events:auto;box-shadow:0 0 40px #f0f8}
+#dlg h3{color:#0ff;margin-bottom:6px}
+#dlg p{color:#cdf;font-size:.88rem;line-height:1.4;margin-bottom:10px}
+#dlg .opts{display:flex;flex-wrap:wrap;gap:8px}
+#dlg button{background:linear-gradient(90deg,#5010a0,#0a4060);border:1px solid #0ff;color:#0ff;padding:8px 12px;border-radius:10px;cursor:pointer;font-size:.8rem}
+#stick{position:absolute;bottom:max(20px,env(safe-area-inset-bottom));left:16px;width:112px;height:112px;border-radius:50%;background:rgba(0,40,80,.4);border:2px solid #0ff5;display:none;pointer-events:auto;touch-action:none;z-index:15}
+#knob{position:absolute;width:44px;height:44px;border-radius:50%;background:rgba(0,255,255,.5);border:2px solid #0ff;left:34px;top:34px}
+#btns{position:absolute;bottom:max(20px,env(safe-area-inset-bottom));right:12px;display:none;flex-direction:column;gap:8px;pointer-events:auto;z-index:15}
+.mbtn{width:52px;height:52px;border-radius:50%;background:rgba(20,0,50,.8);border:2px solid #f0f6;color:#0ff;font-size:.58rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+#topbtns{position:absolute;top:max(8px,env(safe-area-inset-top));right:8px;z-index:50;display:flex;gap:6px;pointer-events:auto}
+#topbtns button{background:rgba(0,15,40,.85);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:7px 10px;font-size:.72rem;cursor:pointer}
+#vignette{position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,25,.6) 100%);display:none}
+#scan{position:fixed;inset:0;pointer-events:none;z-index:6;opacity:.05;display:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,255,255,.35) 3px)}
+#win{position:fixed;inset:0;z-index:120;background:rgba(0,0,10,.92);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;pointer-events:auto}
+#win h2{font-size:clamp(1.4rem,4vw,2.4rem);background:linear-gradient(90deg,#f80,#ff0,#f0f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:12px}
+#win a,#win button{display:inline-block;margin:8px;padding:12px 22px;border-radius:40px;background:linear-gradient(90deg,#f0f,#0ff);color:#000;font-weight:800;text-decoration:none;border:none;cursor:pointer}
 </style>
 </head>
 <body>
-<div id="load"><div class="spin"></div><div style="color:#0ff">Loading Cyberpunk Plaza LIT…</div><div style="color:#668;font-size:.75rem">Awesome graphics · Physics · Multi-platform</div></div>
+<div id="load"><div class="spin"></div><div style="color:#0ff;font-weight:700">Loading Plaza LIT…</div><div style="color:#668;font-size:.75rem">Third-person · Defend → Burn · Xbox</div></div>
 <div id="title">
-  <h1>CYBERPUNK PLAZA — LIT</h1>
-  <p class="sub">Black Rock City 2077 — Tutorial-look neon festival<br>
-  Collect · Cyber car · Defend the wireframe Man · The Burn<br>
-  New lit Man · HD cyber Dragon & Panda · Xbox ready</p>
+  <h1>NEON PLAZA</h1>
+  <p class="sub">Black Rock City 2077 — camera behind you · collect · talk to crew · mount drone or dragon · defend The Man · burn when ready<br>
+  This is the full vision: third-person plaza + light TPS layer.</p>
   <div class="chars">
-    <div class="card" data-c="dragon"><img src="../assets/dragon_v3.png" alt="Dragon"><h3>🐉 DRAGON</h3><p>Fly · Frost · Aerial</p></div>
-    <div class="card" data-c="panda"><img src="../assets/panda_v3.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Drive · Suppress · Armor</p></div>
+    <div class="card" data-c="dragon"><img src="../assets/dragon_v3.png" alt="Dragon"><h3>🐉 DRAGON</h3><p>Frost · fly mount</p></div>
+    <div class="card" data-c="panda"><img src="../assets/panda_v3.png" alt="Panda"><h3>🐼 CYBER PANDA</h3><p>Suppress · craft</p></div>
   </div>
   <button id="go" disabled>ENTER THE PLAYA</button>
-  <p style="margin-top:10px"><a href="../index.html" style="color:#0ff">← Dragon & Panda Hub</a></p>
-  <p style="margin-top:12px;color:#667;font-size:.72rem;text-align:center;max-width:480px">
-    Desktop: WASD · Mouse · E interact · F fly · V drive · R ability · Space jump<br>
-    Mobile: virtual stick + action buttons · Tap canvas for look
+  <p style="margin-top:12px;color:#778;font-size:.7rem;text-align:center;max-width:480px">
+    WASD/LS move · Mouse/RS orbit · LMB/RT shoot · B boom · F drone · V dragon fly · R ability · E talk/craft · X douse · P controls
   </p>
+  <p style="margin-top:8px"><a href="../index.html" style="color:#0ff">← Hub</a> · <a href="drone.html" style="color:#f0f">Drone Arena →</a></p>
 </div>
 <div id="ui">
   <div id="hud">
-    <div class="box"><div style="font-size:.6rem;color:#8af">AVATAR</div><div id="aname" style="font-weight:700">DRAGON</div><div id="st" style="font-size:.6rem;color:#6f6">Explore</div></div>
-    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">TOKENS</div><div id="tok" style="color:#ff0;font-weight:700;font-size:1.05rem">0</div></div>
-    <div class="box" style="text-align:center"><div style="font-size:.55rem;color:#8af">PHASE</div><div id="ph" style="color:#f0f;font-weight:600">COLLECT</div></div>
+    <div class="box"><div class="lab">Avatar</div><div class="val" id="aname">DRAGON</div><div id="st" style="font-size:.62rem;color:#6f8">On foot</div></div>
+    <div class="box" style="text-align:center"><div class="lab">Scrap</div><div class="val" id="scrap">0</div></div>
+    <div class="box" style="text-align:center"><div class="lab">Kills</div><div class="val" id="kills">0</div></div>
+    <div class="box" style="text-align:center"><div class="lab">Crew</div><div class="val" id="crew">0/5</div></div>
+    <div class="box" style="text-align:center"><div class="lab">Ready</div><div class="val" id="ready">0%</div></div>
   </div>
   <div id="manbar"><label>THE MAN — INTEGRITY</label><div class="b"><div class="f" id="mf"></div></div></div>
   <div id="phase"></div>
-  <div id="help">WASD/LS | Mouse/RS | E/A interact | F/LB fly | V/RB drive | R/Y ability | RT shoot | P controls | Xbox supported</div>
-  <div id="dlg"><h4><span id="dn">NPC</span><span class="x" id="dx">×</span></h4><p id="dt"></p><div class="acts" id="da"></div></div>
+  <div id="quest"><h4>MISSION FLOW</h4><ul id="qlist"></ul></div>
+  <div id="help">WASD move · mouse orbit · click shoot · F drone · V dragon · R frost/ability · E talk/bench · X douse · B boom · P Xbox</div>
   <div id="toast"></div>
+  <div id="dlg"><h3 id="dn"></h3><p id="dt"></p><div class="opts" id="do"></div></div>
   <div id="stick"><div id="knob"></div></div>
   <div id="btns">
-    <div class="mbtn" id="bE">E</div>
-    <div class="mbtn" id="bR">R</div>
-    <div class="mbtn" id="bF">F/V</div>
-    <div class="mbtn" id="bJ">JUMP</div>
+    <div class="mbtn" id="bShoot">FIRE</div>
+    <div class="mbtn" id="bBoom">BOOM</div>
+    <div class="mbtn" id="bUse">USE</div>
+    <div class="mbtn" id="bMount">MOUNT</div>
   </div>
 </div>
-<button id="fs">Fullscreen</button>
-<button id="btn-controls" style="position:absolute;top:max(10px,env(safe-area-inset-top));right:100px;z-index:50;pointer-events:auto;background:rgba(0,20,40,.7);border:1px solid #0ff5;color:#0ff;border-radius:8px;padding:6px 10px;font-size:.75rem;cursor:pointer">Controls / Xbox</button>
+<div id="vignette"></div><div id="scan"></div>
+<div id="topbtns">
+  <button id="btn-controls">Controls / Xbox</button>
+  <button id="fs">Fullscreen</button>
+</div>
+<div id="win">
+  <h2>🔥 THE BURN COMPLETE</h2>
+  <p style="color:#cdf;max-width:420px;margin-bottom:16px">Radical self-expression. The Man is lit. Afterglow opens the client terminal.</p>
+  <a href="drone.html">Play Drone Arena</a>
+  <a href="../index.html">Hub</a>
+  <button id="replay">Burn again</button>
+</div>
 <canvas id="c"></canvas>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
-// ========== CONFIG ==========
 const IS_MOBILE = matchMedia('(pointer:coarse)').matches || /iPhone|iPad|Android/i.test(navigator.userAgent);
-const MAX_PR = IS_MOBILE ? 1.5 : 2;
-const NEON = [0xff00ff,0x00ffff,0xff6600,0x00ff88,0xff0088,0x88ff00,0xffaa00];
+const MAX_PR = IS_MOBILE ? 1.25 : 2;
+const NEON = [0xff00ff,0x00ffff,0xff6600,0x00ff88,0xff0088,0x8866ff,0xffff00];
 const ASSETS = '../assets/';
 
-// ========== STATE ==========
-let scene, camera, renderer, controls, clock, player, pMesh, carMesh, carGroup;
-let vel = new THREE.Vector3(), dir = new THREE.Vector3();
+const QUESTS = [
+  {id:'collect', label:'Collect 5 scrap glows'},
+  {id:'npc', label:'Talk to 3 crew (E near them)'},
+  {id:'mount', label:'Mount drone (F) or dragon (R)'},
+  {id:'defend', label:'Clear hostiles · douse fires'},
+  {id:'craft', label:'Craft at neon bench (8 scrap)'},
+  {id:'ready', label:'Reach readiness 100%'},
+  {id:'burn', label:'Approach The Man and Burn'},
+];
+
+let scene, camera, renderer, clock, player, pMesh, car, dronePark, theMan, manSprite;
+let vel = new THREE.Vector3();
 let keys = Object.create(null);
-let locked=false, dlg=false, char='dragon', tokens=0, phase='collect', manHP=100;
-let flying=false, driving=false, canJump=true;
-let installations=[], npcs=[], items=[], fires=[], drones=[], enemies=[], gens=[];
-let theMan, dust, coolF=0, coolA=0, questsDone=0, zpegs=0;
+let char='dragon', scrap=0, kills=0, manHP=100, readiness=0, phase='scout';
+let mount='foot'; // foot | drone | dragon | car
+let yaw=0, pitch=0.28, coolS=0, coolB=0, coolD=0, coolA=0;
+let hostiles=[], fires=[], projectiles=[], pickups=[], npcs=[], fx=[], rings=[];
+let textures={}, dlg=false, pointerDown=false, mouseDX=0, mouseDY=0;
 let stickActive=false, stickV={x:0,y:0};
-let textures = {};
+let cloak=0, ward=0, jammer=0, crewTalked=new Set(), questDone=new Set();
+let playing=false;
 
-// ========== AUDIO (tiny WebAudio beeps) ==========
-const AC = window.AudioContext || window.webkitAudioContext;
-let actx;
-function beep(f=440,d=.08,type='square',g=.04){
-  try{
-    if(!actx) actx=new AC();
-    const o=actx.createOscillator(), gn=actx.createGain();
-    o.type=type; o.frequency.value=f; gn.gain.value=g;
-    o.connect(gn); gn.connect(actx.destination);
-    o.start(); gn.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d); o.stop(actx.currentTime+d);
-  }catch(e){}
-}
+function toast(m,t=2200){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',t)}
+function banner(m){const b=document.getElementById('phase');b.textContent=m;b.style.display='block';setTimeout(()=>b.style.display='none',5500)}
+function loadTex(url){return new Promise(res=>{new THREE.TextureLoader().load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;res(t)},undefined,()=>{const c=document.createElement('canvas');c.width=c.height=32;const x=c.getContext('2d');x.fillStyle='#0ff';x.fillRect(0,0,32,32);res(new THREE.CanvasTexture(c))})})}
+function neonMat(c,e=c,ei=.7){return new THREE.MeshStandardMaterial({color:c,metalness:.85,roughness:.28,emissive:e,emissiveIntensity:ei})}
 
-// ========== HELPERS ==========
-function toast(m,t=2600){const e=document.getElementById('toast');e.textContent=m;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',t)}
-function setPhase(p){phase=p;document.getElementById('ph').textContent=p.toUpperCase();document.getElementById('st').textContent='Phase: '+p}
-function banner(m){const b=document.getElementById('phase');b.textContent=m;b.style.display='block';setTimeout(()=>b.style.display='none',7000)}
-function loadTex(url){
-  return new Promise(res=>{
-    new THREE.TextureLoader().load(url,t=>{t.colorSpace=THREE.SRGBColorSpace;t.generateMipmaps=true;res(t)},undefined,()=>{
-      const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');x.fillStyle='#0ff';x.fillRect(0,0,64,64);res(new THREE.CanvasTexture(c));
-    });
+function refreshQuest(){
+  const ul=document.getElementById('qlist'); ul.innerHTML='';
+  let foundCur=false;
+  QUESTS.forEach(q=>{
+    const li=document.createElement('li');
+    const done=questDone.has(q.id);
+    li.textContent=(done?'✓ ':'○ ')+q.label;
+    if(done) li.className='done';
+    else if(!foundCur){li.className='cur';foundCur=true}
+    ul.appendChild(li);
   });
+  document.getElementById('crew').textContent=crewTalked.size+'/5';
 }
+function markQ(id){if(!questDone.has(id)){questDone.add(id);refreshQuest();toast('✓ '+id)}}
 
-// ========== INIT ==========
 async function init(){
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x030012);
-  scene.fog = new THREE.FogExp2(0x0c0035, IS_MOBILE ? 0.0065 : 0.0045);
+  scene=new THREE.Scene();
+  scene.background=new THREE.Color(0x050018);
+  scene.fog=new THREE.FogExp2(0x0c0035, IS_MOBILE?0.007:0.005);
 
-  camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 800);
-  camera.position.set(0,1.7,24);
+  camera=new THREE.PerspectiveCamera(68,innerWidth/innerHeight,0.15,500);
+  renderer=new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:!IS_MOBILE,powerPreference:'high-performance'});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,MAX_PR));
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.35;
+  renderer.outputColorSpace=THREE.SRGBColorSpace;
 
-  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'), antialias:!IS_MOBILE, powerPreference:'high-performance'});
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio, MAX_PR));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.32;
-
-  // Lights
-  scene.add(new THREE.AmbientLight(0x1a1040, 0.55));
-  const moon = new THREE.DirectionalLight(0x6688ff, 0.6); moon.position.set(-40,80,-20); scene.add(moon);
-  const fill = new THREE.DirectionalLight(0xff44aa, 0.2); fill.position.set(30,40,40); scene.add(fill);
-  for(let i=0;i<(IS_MOBILE?10:18);i++){
-    const l=new THREE.PointLight(NEON[i%7], 2.4, 42, 1.6);
-    const a=(i/14)*Math.PI*2, r=16+Math.random()*48;
-    l.position.set(Math.cos(a)*r, 2+Math.random()*6, Math.sin(a)*r);
-    scene.add(l);
+  scene.add(new THREE.AmbientLight(0x1a1048,.55));
+  const moon=new THREE.DirectionalLight(0x6688ff,.5); moon.position.set(-30,80,-20); scene.add(moon);
+  const rim=new THREE.DirectionalLight(0xff44aa,.3); rim.position.set(40,20,30); scene.add(rim);
+  for(let i=0;i<(IS_MOBILE?8:14);i++){
+    const l=new THREE.PointLight(NEON[i%NEON.length],2.5,42,1.4);
+    const a=(i/14)*Math.PI*2,r=18+Math.random()*50;
+    l.position.set(Math.cos(a)*r,2+Math.random()*8,Math.sin(a)*r); scene.add(l);
   }
 
   // Ground
-  const gTex = await loadTex(ASSETS+'ground.jpg');
-  gTex.wrapS=gTex.wrapT=THREE.RepeatWrapping; gTex.repeat.set(28,28);
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(320,320), new THREE.MeshStandardMaterial({map:gTex, roughness:.92, metalness:.05, color:0xccbbaa}));
-  ground.rotation.x=-Math.PI/2; scene.add(ground);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(110,64), new THREE.MeshStandardMaterial({color:0x140a28,metalness:.6,roughness:.4,emissive:0x080418,emissiveIntensity:.35}));
+  floor.rotation.x=-Math.PI/2; scene.add(floor);
+  for(let i=1;i<=6;i++){
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(14*i,.06,6,80), new THREE.MeshBasicMaterial({color:NEON[i%NEON.length],transparent:true,opacity:.5,blending:THREE.AdditiveBlending}));
+    ring.rotation.x=Math.PI/2; ring.position.y=.03; ring.userData={spin:.04+i*.008}; scene.add(ring); rings.push(ring);
+  }
 
-  // Stars
-  const sPos=[]; for(let i=0;i<(IS_MOBILE?1200:2200);i++){const r=280+Math.random()*180,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);sPos.push(r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph),r*Math.sin(ph)*Math.sin(th))}
-  const sGeo=new THREE.BufferGeometry(); sGeo.setAttribute('position',new THREE.Float32BufferAttribute(sPos,3));
-  scene.add(new THREE.Points(sGeo, new THREE.PointsMaterial({color:0xffffff,size:0.55,transparent:true,opacity:.9})));
+  // Stars + dust
+  const sPos=[]; for(let i=0;i<(IS_MOBILE?1000:2000);i++){const r=200+Math.random()*180,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);sPos.push(r*Math.sin(ph)*Math.cos(th),r*Math.cos(ph),r*Math.sin(ph)*Math.sin(th))}
+  const sG=new THREE.BufferGeometry(); sG.setAttribute('position',new THREE.Float32BufferAttribute(sPos,3));
+  scene.add(new THREE.Points(sG,new THREE.PointsMaterial({color:0xffffff,size:.5,transparent:true,opacity:.9})));
+  const dPos=[]; for(let i=0;i<(IS_MOBILE?300:700);i++) dPos.push((Math.random()-.5)*140,Math.random()*30,(Math.random()-.5)*140);
+  const dG=new THREE.BufferGeometry(); dG.setAttribute('position',new THREE.Float32BufferAttribute(dPos,3));
+  scene.add(new THREE.Points(dG,new THREE.PointsMaterial({color:0xaa66ff,size:.12,transparent:true,opacity:.3,blending:THREE.AdditiveBlending,depthWrite:false})));
 
-  // Dust
-  const dPos=[]; for(let i=0;i<(IS_MOBILE?600:1100);i++) dPos.push((Math.random()-.5)*180, Math.random()*14, (Math.random()-.5)*180);
-  const dGeo=new THREE.BufferGeometry(); dGeo.setAttribute('position',new THREE.Float32BufferAttribute(dPos,3));
-  dust = new THREE.Points(dGeo, new THREE.PointsMaterial({color:0xb0d0ff,size:0.1,transparent:true,opacity:.28,blending:THREE.AdditiveBlending,depthWrite:false}));
-  scene.add(dust);
+  // Installations / art
+  for(let i=0;i<(IS_MOBILE?10:16);i++){
+    const g=new THREE.Group();
+    const base=new THREE.Mesh(new THREE.BoxGeometry(2+Math.random()*3,.4,2+Math.random()*3), neonMat(0x1a1040,NEON[i%NEON.length],.4));
+    g.add(base);
+    const spire=new THREE.Mesh(new THREE.CylinderGeometry(.1,.25,3+Math.random()*6,6), new THREE.MeshBasicMaterial({color:NEON[i%NEON.length],transparent:true,opacity:.8,blending:THREE.AdditiveBlending}));
+    spire.position.y=2; g.add(spire);
+    const a=Math.random()*Math.PI*2,r=22+Math.random()*55;
+    g.position.set(Math.cos(a)*r,0,Math.sin(a)*r); scene.add(g);
+  }
+
+  textures.dragon=await loadTex(ASSETS+'dragon_v3.png');
+  textures.panda=await loadTex(ASSETS+'panda_v3.png');
+  textures.car=await loadTex(ASSETS+'car.png');
+  textures.man=await loadTex(ASSETS+'the_man_sprite.png');
+  textures.drone=await loadTex(ASSETS+'drone_mount.png');
+  textures.rogue=await loadTex(ASSETS+'rogue_drone.png');
+  textures.fire=await loadTex(ASSETS+'fire_patch.png');
+  textures.frost=await loadTex(ASSETS+'frost_breath.png');
+  textures.zpeg=await loadTex(ASSETS+'zpeg.png');
+  textures.fox=await loadTex(ASSETS+'npc_fox_hd.png');
+  textures.shaman=await loadTex(ASSETS+'npc_shaman_hd.png');
+  textures.pilot=await loadTex(ASSETS+'npc_pilot.png');
+  textures.engineer=await loadTex(ASSETS+'npc_engineer.png');
+  textures.auctioneer=await loadTex(ASSETS+'npc_auctioneer.png');
 
   // THE MAN
-  theMan = new THREE.Group();
-  theMan.add(new THREE.Mesh(new THREE.CylinderGeometry(7.5,9.5,2,12), new THREE.MeshStandardMaterial({color:0x0a0a18,metalness:.9,roughness:.25,emissive:0x220044,emissiveIntensity:.4})));
-  const body = new THREE.Mesh(new THREE.BoxGeometry(3,15,2), new THREE.MeshStandardMaterial({color:0x00e8ff,metalness:.95,roughness:.12,emissive:0x004466,emissiveIntensity:.7}));
-  body.position.y=10.5; theMan.add(body);
-  {const _w=new THREE.Mesh(new THREE.BoxGeometry(3.2,15.2,2.2), new THREE.MeshBasicMaterial({color:0xff00cc,wireframe:true,transparent:true,opacity:.5}));_w.position.y=10.5;theMan.add(_w);}
-  const head=new THREE.Mesh(new THREE.ConeGeometry(2.4,4.5,6), new THREE.MeshStandardMaterial({color:0xff00cc,metalness:.85,emissive:0x550044,emissiveIntensity:1}));
-  head.position.y=20.5; theMan.add(head);
-  for(const s of[-1,1]){const arm=new THREE.Mesh(new THREE.BoxGeometry(.9,7.5,.9),new THREE.MeshStandardMaterial({color:0x00ffaa,emissive:0x003322,emissiveIntensity:.65,metalness:.8}));arm.position.set(s*3,12.5,0);arm.rotation.z=s*.28;theMan.add(arm)}
-  for(let i=0;i<5;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(6+i*1.7,.11,8,48),new THREE.MeshBasicMaterial({color:NEON[i%7],transparent:true,opacity:.75,blending:THREE.AdditiveBlending}));ring.position.y=2.5+i*3.2;ring.rotation.x=Math.PI/2;theMan.add(ring)}
-  theMan.add(new THREE.PointLight(0xff00ff,14,75)).position.y=13;
-  theMan.add(new THREE.PointLight(0x00ffff,8,50)).position.set(0,21,0);
-  theMan.position.set(0,1,0); scene.add(theMan); installations.push(theMan);
-
-  // Fiber forest
-  for(let i=0;i<(IS_MOBILE?28:42);i++){
-    const h=2.2+Math.random()*6.5;
-    const f=new THREE.Mesh(new THREE.CylinderGeometry(.04,.07,h,5), new THREE.MeshBasicMaterial({color:NEON[i%7],transparent:true,opacity:.85,blending:THREE.AdditiveBlending}));
-    const a=Math.random()*Math.PI*2, r=14+Math.random()*58;
-    f.position.set(Math.cos(a)*r, h/2, Math.sin(a)*r); scene.add(f); installations.push(f);
+  theMan=new THREE.Group();
+  theMan.add(new THREE.Mesh(new THREE.CylinderGeometry(6.5,8,1.4,14), neonMat(0x0a0a20,0x220044,.55)));
+  const body=new THREE.Mesh(new THREE.BoxGeometry(2.4,12,1.8), neonMat(0x00e8ff,0x004466,.9)); body.position.y=8; theMan.add(body);
+  theMan.add(new THREE.Mesh(new THREE.BoxGeometry(2.6,12.2,2), new THREE.MeshBasicMaterial({color:0xff00cc,wireframe:true,transparent:true,opacity:.55}))).position.y=8;
+  for(let i=0;i<5;i++){
+    const r=new THREE.Mesh(new THREE.TorusGeometry(5+i*1.5,.08,8,48), new THREE.MeshBasicMaterial({color:NEON[i%NEON.length],transparent:true,opacity:.7,blending:THREE.AdditiveBlending}));
+    r.position.y=2+i*3; r.rotation.x=Math.PI/2; theMan.add(r); rings.push(r);
   }
+  manSprite=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.man,transparent:true,alphaTest:.06,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.92}));
+  manSprite.scale.set(11,20,1); manSprite.position.y=11; theMan.add(manSprite);
+  theMan.add(new THREE.PointLight(0xff00ff,14,70)).position.y=12;
+  theMan.add(new THREE.PointLight(0x00ffff,8,45)).position.set(0,18,0);
+  theMan.position.set(0,.7,0); scene.add(theMan);
 
-  // Floating gems
-  for(let i=0;i<(IS_MOBILE?6:10);i++){
-    const py=new THREE.Mesh(new THREE.OctahedronGeometry(1.8+Math.random()*1.8,0), new THREE.MeshStandardMaterial({color:NEON[i%7],transparent:true,opacity:.42,emissive:NEON[i%7],emissiveIntensity:.5,metalness:.9,wireframe:Math.random()>.4}));
-    const a=(i/10)*Math.PI*2+.2, r=32+Math.random()*32;
-    py.position.set(Math.cos(a)*r, 3.5+Math.random()*2.5, Math.sin(a)*r);
-    py.userData={float:true,baseY:py.position.y,phase:Math.random()*Math.PI*2};
-    scene.add(py); installations.push(py);
-  }
+  // Bench
+  const bench=new THREE.Group();
+  const table=new THREE.Mesh(new THREE.BoxGeometry(3.4,.3,1.7), neonMat(0x223344,0x00aaff,.5)); table.position.y=.9; bench.add(table);
+  bench.position.set(14,0,12); scene.add(bench);
+  scene.add(new THREE.PointLight(0x00ffff,3,16)).position.set(14,2.2,12);
 
-  // Simple art cars (procedural)
-  for(let i=0;i<(IS_MOBILE?4:7);i++){
-    const car=new THREE.Group();
-    car.add(new THREE.Mesh(new THREE.BoxGeometry(3.8,1,2), new THREE.MeshStandardMaterial({color:0x1a1a2a,metalness:.95,roughness:.2,emissive:0x110022})));
-    const cab=new THREE.Mesh(new THREE.BoxGeometry(1.9,.9,1.5), new THREE.MeshStandardMaterial({color:0x00bbff,transparent:true,opacity:.65,emissive:0x004466,emissiveIntensity:.5}));
-    cab.position.y=1; car.add(cab);
-    car.add(new THREE.PointLight(0xffaa00,2.5,14)).position.set(2,.4,.5);
-    const a=Math.random()*Math.PI*2, r=48+Math.random()*36;
-    car.position.set(Math.cos(a)*r, .5, Math.sin(a)*r);
-    car.userData={isCar:true,speed:.012+Math.random()*.02,radius:r,angle:a};
-    scene.add(car); installations.push(car);
-  }
+  // Car
+  car=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.car,transparent:true,alphaTest:.08,depthWrite:false}));
+  car.scale.set(5.5,3.2,1); car.position.set(-8,1.6,16); scene.add(car);
 
-  // Temple
-  const temple=new THREE.Group();
-  temple.add(new THREE.Mesh(new THREE.BoxGeometry(12,.8,12), new THREE.MeshStandardMaterial({color:0x0e0e1a,metalness:.7})));
-  for(let i=0;i<4;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(.85,10,.85),new THREE.MeshStandardMaterial({color:0xff00aa,emissive:0x440033,emissiveIntensity:.55}));p.position.set((i%2?4:-4),5.2,(i<2?4:-4));temple.add(p)}
-  const roof=new THREE.Mesh(new THREE.ConeGeometry(8,4.5,4),new THREE.MeshStandardMaterial({color:0x00ffff,transparent:true,opacity:.4,emissive:0x003344,emissiveIntensity:.45}));
-  roof.position.y=12; temple.add(roof); temple.position.set(-58,0,-32); scene.add(temple); installations.push(temple);
-
-  // Station pads
-  [{n:'ZPEG',p:[12,0,10],c:0xffff00},{n:'x402',p:[-14,0,18],c:0x00ff88},{n:'Auction',p:[26,0,-20],c:0xff8800}].forEach(s=>{
-    const st=new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.6,.3,10), new THREE.MeshStandardMaterial({color:s.c,emissive:s.c,emissiveIntensity:.65,metalness:.8}));
-    st.position.set(s.p[0],.15,s.p[2]); st.userData={station:s.n}; scene.add(st); installations.push(st);
-    scene.add(new THREE.PointLight(s.c,2,12)).position.set(s.p[0],2,s.p[2]);
-  });
-
-  // Load key textures
-  textures.dragon = await loadTex(ASSETS+'dragon_v3.png');
-  textures.panda  = await loadTex(ASSETS+'panda_v3.png');
-  textures.car    = await loadTex(ASSETS+'car.png');
-  textures.manSpr = await loadTex(ASSETS+'the_man_sprite.png');
-  textures.droneMount = await loadTex(ASSETS+'drone_mount.png');
-  // Attach LIT Man after textures ready
-  if(textures.manSpr && theMan){
-    const manS=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.manSpr,transparent:true,alphaTest:.06,depthWrite:false,blending:THREE.AdditiveBlending,opacity:.92}));
-    manS.scale.set(12,22,1); manS.position.y=12; manS.userData={manGlow:true}; theMan.add(manS);
-  }
-  for(const n of ['npc_shaman','npc_fox','npc_pilot','npc_engineer','npc_monk','npc_scribe','item_shard','item_spark','fire_patch','rogue_drone','suppress_drone','frost_breath','zpeg']){
-    textures[n] = await loadTex(ASSETS+n+'.png');
-  }
+  // Parked drone
+  dronePark=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.drone,transparent:true,alphaTest:.08,depthWrite:false}));
+  dronePark.scale.set(4.8,2.2,1); dronePark.position.set(8,1.5,18); scene.add(dronePark);
 
   // Player
-  player = new THREE.Group(); player.position.set(0,0,22); scene.add(player);
+  player=new THREE.Group(); player.position.set(0,0,24); scene.add(player);
   setChar('dragon');
 
-  // Player cyber car (mountable) — big awesome sprite
-  carGroup = new THREE.Group();
-  carMesh = new THREE.Sprite(new THREE.SpriteMaterial({map:textures.car, transparent:true, alphaTest:.08, depthWrite:false}));
-  carMesh.scale.set(5.5, 3.1, 1);
-  carMesh.position.y = 1.4;
-  carGroup.add(carMesh);
-  carGroup.add(new THREE.PointLight(0xff00ff, 3, 18)).position.set(0,1.5,0);
-  carGroup.add(new THREE.PointLight(0x00ffff, 2.5, 14)).position.set(-2,1,0);
-  carGroup.position.set(8, 0, 18);
-  carGroup.userData = {isPlayerCar:true, speed:0, yaw:0};
-  scene.add(carGroup);
-
-  // Controls
-  controls = new PointerLockControls(camera, document.body);
-  scene.add(controls.getObject());
-  controls.getObject().position.set(0,1.7,22);
-
   // NPCs
-  const NPCS = [
-    {name:'Neon Shaman',t:'Welcome traveler. Collect 3 Neon Shards near the fiber forest and return. I will teach Zero-Point.',need:{'neon-shard':3},rew:30,spr:'npc_shaman'},
-    {name:'Chrome Fox',t:'Dragon & Panda rule this Playa. Find a Quantum Spark and I open a deal.',need:{'quantum-spark':1},rew:40,spr:'npc_fox'},
-    {name:'Dust Runner',t:'Art cars need fuel. Bring 2 Dust Cores.',need:{'dust-core':2},rew:35,spr:'npc_pilot'},
-    {name:'ZPEG Eng',t:'Place a ZPEG near The Man. I give you a kit if you have a Circuit Board.',need:{'circuit-board':1},rew:50,spr:'npc_engineer',gift:'zpeg-kit'},
-    {name:'Laser Monk',t:'The Man holds our dream. Defend it when arsonists come.',need:{},rew:0,spr:'npc_monk'},
-    {name:'Holo Scribe',t:'Leave no trace… except code. Collect Fiber Coils for the archive.',need:{'fiber-coil':2},rew:25,spr:'npc_scribe'}
+  const npcData=[
+    {name:'DRAKE',tex:'fox',pos:[18,0,8], lines:['Yo pilot — scrap on the outer rings.','Mount the void-craft near the east pad.','When readiness hits 100, burn The Man.']},
+    {name:'PIX',tex:'shaman',pos:[-16,0,10], lines:['Hostiles kindle fires at the Man.','Douse with X / LT — NPCs help sometimes.','Craft cloak, ward, jammer at the bench.']},
+    {name:'STRYPE',tex:'pilot',pos:[10,0,-14], lines:['F = drone. R = dragon flight.','RT shoot · B boom orbs · Y ability.','Defend until the burn.']},
+    {name:'NOVA',tex:'engineer',pos:[-12,0,-12], lines:['Bench needs 8 scrap.','Jammer scrambles their kindling AI.','You look ready for the client terminal afterglow.']},
+    {name:'LIN',tex:'auctioneer',pos:[0,0,32], lines:['Welcome to Dragon & Panda plaza.','This is the showcase world for partners.','Talk to all five of us for readiness boosts.']},
   ];
-  NPCS.forEach((d,i)=>{
-    const mat=new THREE.SpriteMaterial({map:textures[d.spr]||textures.npc_shaman,transparent:true,alphaTest:.1,depthWrite:false});
-    const spr=new THREE.Sprite(mat); spr.scale.set(2,3,1);
-    const a=(i/NPCS.length)*Math.PI*2+.1, r=12+(i%4)*7;
-    spr.position.set(Math.cos(a)*r,1.5,Math.sin(a)*r);
-    spr.userData={...d, done:false, phase:Math.random()*Math.PI*2, isNPC:true};
-    scene.add(spr); npcs.push(spr);
+  npcData.forEach(n=>{
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures[n.tex],transparent:true,alphaTest:.1,depthWrite:false}));
+    s.scale.set(2.2,2.8,1); s.position.set(n.pos[0],1.5,n.pos[2]);
+    s.userData={npc:true,name:n.name,lines:n.lines,li:0}; scene.add(s); npcs.push(s);
   });
 
-  // Collectibles
-  const IKEYS = ['neon-shard','fiber-coil','dust-core','quantum-spark','circuit-board','plasma-vial','token-chip','zpeg-kit'];
-  for(let i=0;i<(IS_MOBILE?28:45);i++){
-    const key=IKEYS[i%IKEYS.length];
-    let mesh;
-    if(key==='neon-shard'||key==='quantum-spark'){
-      mesh=new THREE.Sprite(new THREE.SpriteMaterial({map:textures[key==='neon-shard'?'item_shard':'item_spark'],transparent:true,alphaTest:.05,blending:THREE.AdditiveBlending,depthWrite:false}));
-      mesh.scale.set(.8,.8,1);
-    }else{
-      mesh=new THREE.Mesh(new THREE.OctahedronGeometry(.32+Math.random()*.15,0), new THREE.MeshStandardMaterial({color:NEON[i%7],emissive:NEON[i%7],emissiveIntensity:.85,metalness:.7,transparent:true,opacity:.9}));
+  spawnHostiles(6);
+  spawnPickups(28);
+  refreshQuest();
+
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+  document.addEventListener('keydown',e=>{keys[e.code]=true; if(e.code==='Tab')e.preventDefault(); onKey(e)});
+  document.addEventListener('keyup',e=>{keys[e.code]=false});
+  document.getElementById('c').addEventListener('mousedown',e=>{if(e.button===0){pointerDown=true; if(playing&&!dlg) document.body.requestPointerLock?.()}});
+  document.addEventListener('mouseup',()=>pointerDown=false);
+  document.addEventListener('mousemove',e=>{
+    if(document.pointerLockElement||(pointerDown&&!IS_MOBILE)){
+      yaw-=e.movementX*0.0035;
+      pitch=Math.max(-0.15,Math.min(0.85,pitch-e.movementY*0.0025));
     }
-    const a=Math.random()*Math.PI*2, r=9+Math.random()*70;
-    mesh.position.set(Math.cos(a)*r, .65+Math.random(), Math.sin(a)*r);
-    mesh.userData={key, phase:Math.random()*Math.PI*2};
-    scene.add(mesh); items.push(mesh);
-  }
-
-  // Events
-  window.addEventListener('resize', onResize);
-  document.addEventListener('keydown', e=>{keys[e.code]=true; if(e.code==='Tab')e.preventDefault(); onKey(e,true)});
-  document.addEventListener('keyup', e=>{keys[e.code]=false});
-  document.getElementById('c').addEventListener('click', ()=>{if(!dlg) controls.lock()});
-  controls.addEventListener('lock', ()=>locked=true);
-  controls.addEventListener('unlock', ()=>locked=false);
-  document.getElementById('dx').onclick = closeDlg;
-  document.getElementById('fs').onclick = ()=>{const el=document.documentElement; if(!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.()};
-  document.getElementById('btn-controls').onclick=()=>{ if(window.DPControls){ DPControls.ensureStyles(); DPControls.openMapper(); } };
-  if(window.DPControls) DPControls.ensureStyles();
-
-  // Title cards
+  });
+  document.getElementById('fs').onclick=()=>{const el=document.documentElement;if(!document.fullscreenElement)el.requestFullscreen?.();else document.exitFullscreen?.()};
+  document.getElementById('btn-controls').onclick=()=>{DPControls.ensureStyles();DPControls.openMapper()};
+  DPControls.ensureStyles();
   document.querySelectorAll('.card').forEach(c=>{
     c.onclick=()=>{document.querySelectorAll('.card').forEach(x=>x.classList.remove('on'));c.classList.add('on');char=c.dataset.c;document.getElementById('go').disabled=false};
   });
   document.getElementById('go').onclick=startGame;
+  document.getElementById('replay').onclick=()=>location.reload();
 
-  // Mobile controls
   if(IS_MOBILE){
     document.getElementById('stick').style.display='block';
     document.getElementById('btns').style.display='flex';
     setupStick();
-    document.getElementById('bE').ontouchstart=e=>{e.preventDefault();interact()};
-    document.getElementById('bR').ontouchstart=e=>{e.preventDefault();ability()};
-    document.getElementById('bF').ontouchstart=e=>{e.preventDefault(); if(char==='dragon') toggleFly(); else toggleDrive()};
-    document.getElementById('bJ').ontouchstart=e=>{e.preventDefault(); if(canJump&&!flying){vel.y=7.5;canJump=false;beep(220,.06)}};
+    document.getElementById('bShoot').ontouchstart=e=>{e.preventDefault();shoot()};
+    document.getElementById('bBoom').ontouchstart=e=>{e.preventDefault();boom()};
+    document.getElementById('bUse').ontouchstart=e=>{e.preventDefault();interact()};
+    document.getElementById('bMount').ontouchstart=e=>{e.preventDefault();cycleMount()};
+    // touch look: right half of screen
+    document.getElementById('c').addEventListener('touchmove',e=>{
+      if(e.touches.length===1){
+        const t=e.touches[0];
+        if(t.clientX>innerWidth*0.45){
+          if(!this._lx){this._lx=t.clientX;this._ly=t.clientY}
+          yaw-=(t.clientX-this._lx)*0.004; pitch=Math.max(-.15,Math.min(.85,pitch-(t.clientY-this._ly)*0.003));
+          this._lx=t.clientX; this._ly=t.clientY;
+        }
+      }
+    },{passive:true});
+    document.getElementById('c').addEventListener('touchend',()=>{this._lx=this._ly=null});
   }
 
-  clock = new THREE.Clock();
+  clock=new THREE.Clock();
   document.getElementById('load').style.display='none';
   animate();
 }
 
 function setChar(c){
   char=c;
-  if(pMesh){player.remove(pMesh); pMesh.material.dispose()}
-  const tex = c==='dragon' ? textures.dragon : textures.panda;
-  pMesh = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true, alphaTest:.08, depthWrite:false}));
-  pMesh.scale.set(c==='dragon'?2.7:2.4, c==='dragon'?4.0:3.6, 1);
-  pMesh.position.y=1.65; player.add(pMesh);
-  document.getElementById('aname').textContent = c==='dragon' ? 'DRAGON' : 'CYBER PANDA';
+  if(pMesh){player.remove(pMesh);pMesh.material.dispose()}
+  const tex=c==='dragon'?textures.dragon:textures.panda;
+  pMesh=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,alphaTest:.08,depthWrite:false}));
+  pMesh.scale.set(c==='dragon'?2.8:2.5, c==='dragon'?4.1:3.7, 1);
+  pMesh.position.y=2.05; player.add(pMesh);
+  document.getElementById('aname').textContent=c==='dragon'?'DRAGON':'CYBER PANDA';
 }
 
 function startGame(){
-  setChar(char);
-  document.getElementById('title').style.opacity='0';
-  setTimeout(()=>{
-    document.getElementById('title').style.display='none';
-    document.getElementById('ui').style.display='flex';
-    toast(`Welcome as ${char.toUpperCase()}! ${IS_MOBILE?'Use stick + buttons.':'Click canvas to look.'}`);
-    beep(520,.1,'sine',.05);
-  },600);
-}
-
-// ========== INPUT ==========
-function onKey(e,down){
-  if(!down) return;
-  switch(e.code){
-    case 'KeyE': interact(); break;
-    case 'KeyF': toggleFly(); break;
-    case 'KeyV': toggleDrive(); break;
-    case 'KeyR': ability(); break;
-    case 'Digit1': setChar('dragon'); toast('🐉 DRAGON'); break;
-    case 'Digit2': setChar('panda'); toast('🐼 CYBER PANDA'); break;
-    case 'Space': if(flying) vel.y+=3.5; else if(canJump){vel.y=7.8;canJump=false;beep(200,.05)} break;
-    case 'Escape': if(dlg) closeDlg(); break;
-  }
+  setChar(char); playing=true;
+  document.getElementById('title').style.display='none';
+  document.getElementById('ui').style.display='block';
+  document.getElementById('quest').style.display='block';
+  document.getElementById('vignette').style.display='block';
+  document.getElementById('scan').style.display='block';
+  banner('Third-person plaza live — collect scrap, talk to crew, defend The Man');
+  toast('Click canvas for mouse look · WASD to move');
+  document.body.requestPointerLock?.();
 }
 
 function setupStick(){
-  const st=document.getElementById('stick'), kn=document.getElementById('knob');
-  const max=32;
-  function set(x,y){
-    const l=Math.hypot(x,y)||1; const cl=Math.min(l,max);
-    stickV.x=(x/l)*cl/max; stickV.y=(y/l)*cl/max;
-    kn.style.left=(33+stickV.x*max)+'px'; kn.style.top=(33+stickV.y*max)+'px';
-  }
-  st.ontouchstart=st.ontouchmove=e=>{
-    e.preventDefault(); stickActive=true;
-    const t=e.touches[0], r=st.getBoundingClientRect();
-    set(t.clientX-r.left-55, t.clientY-r.top-55);
-  };
-  st.ontouchend=()=>{stickActive=false; stickV.x=stickV.y=0; kn.style.left='33px'; kn.style.top='33px'};
+  const st=document.getElementById('stick'),kn=document.getElementById('knob'),max=34;
+  function set(x,y){const l=Math.hypot(x,y)||1;const cl=Math.min(l,max);stickV.x=(x/l)*cl/max;stickV.y=(y/l)*cl/max;kn.style.left=(34+stickV.x*max)+'px';kn.style.top=(34+stickV.y*max)+'px'}
+  st.ontouchstart=st.ontouchmove=e=>{e.preventDefault();stickActive=true;const t=e.touches[0],r=st.getBoundingClientRect();set(t.clientX-r.left-56,t.clientY-r.top-56)};
+  st.ontouchend=()=>{stickActive=false;stickV={x:0,y:0};kn.style.left=kn.style.top='34px'};
 }
 
-// ========== ACTIONS ==========
-function toggleFly(){
-  if(char!=='dragon'){toast('Only Dragon flies (Panda drives the car with V)');return}
-  if(driving) return;
-  flying=!flying;
-  if(flying){toast('🐉 Flight — Space climb'); beep(660,.08)}
-  else {controls.getObject().position.y=1.7; toast('Landed')}
+function onKey(e){
+  if(dlg) return;
+  switch(e.code){
+    case 'KeyF': toggleDrone(); break;
+    case 'KeyR': ability(); break;
+    case 'KeyE': interact(); break;
+    case 'KeyX': douse(); break;
+    case 'KeyB': boom(); break;
+    case 'KeyC': if(cloak>0){cloak--; toast('👻 Cloaked 8s'); setTimeout(()=>toast('Visible'),8000)} break;
+    case 'KeyY': ability(); break;
+    case 'Digit1': setChar('dragon'); break;
+    case 'Digit2': setChar('panda'); break;
+    case 'Space': if(mount==='foot'&&player.position.y<0.2) vel.y=9; if(mount==='drone'||mount==='dragon') vel.y+=6; break;
+    case 'KeyV': if(player.position.distanceTo(car.position)<6) toggleCar(); break;
+  }
 }
 
-function toggleDrive(){
-  if(flying) return;
-  const dist = player.position.distanceTo(carGroup.position);
-  if(!driving){
-    if(dist>6){toast('Get closer to the cyber car (purple neon)');return}
-    driving=true; toast('🚗 Driving cyber car — WASD / stick to drive'); beep(180,.1,'sawtooth',.04);
-    pMesh.visible=false;
-  }else{
-    driving=false; pMesh.visible=true;
-    // exit beside car
-    player.position.copy(carGroup.position); player.position.x+=3;
-    controls.getObject().position.x=player.position.x; controls.getObject().position.z=player.position.z;
-    toast('Exited vehicle');
+function cycleMount(){
+  if(mount==='foot') toggleDrone();
+  else if(mount==='drone'){ mount='foot'; document.getElementById('st').textContent='On foot'; }
+  else mount='foot';
+}
+
+function toggleDrone(){
+  if(mount==='drone'){ mount='foot'; document.getElementById('st').textContent='On foot'; toast('Dismounted drone'); return; }
+  if(mount==='dragon'){ mount='foot'; }
+  if(player.position.distanceTo(dronePark.position)>14 && mount==='foot'){ toast('Get closer to the purple void-craft'); return; }
+  mount='drone'; markQ('mount'); document.getElementById('st').textContent='🚁 Drone mounted';
+  toast('🚁 DRONE ONLINE — Space up · Ctrl down · third-person flight');
+}
+
+function toggleDragonFly(){
+  if(mount==='dragon'){ mount='foot'; document.getElementById('st').textContent='On foot'; toast('Landed'); return; }
+  mount='dragon'; markQ('mount'); document.getElementById('st').textContent='🐉 Dragon flight';
+  toast('🐉 Wings out — Space climb · Ctrl dive');
+}
+
+function toggleCar(){
+  if(mount==='car'){ mount='foot'; document.getElementById('st').textContent='On foot'; toast('Left vehicle'); return; }
+  mount='car'; document.getElementById('st').textContent='🚗 Cyber car'; toast('Vehicle engaged — WASD drive');
+}
+
+function getForward(){
+  return new THREE.Vector3(-Math.sin(yaw),0,-Math.cos(yaw));
+}
+function getRight(){
+  return new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));
+}
+
+function shoot(){
+  if(coolS>0||dlg) return; coolS=.16;
+  const fwd=getForward().clone(); fwd.y=0.05; fwd.normalize();
+  const bolt=new THREE.Mesh(new THREE.SphereGeometry(.12,8,8), new THREE.MeshBasicMaterial({color:char==='dragon'?0x00ffff:0xff00ff}));
+  bolt.position.copy(player.position); bolt.position.y=1.6; bolt.position.add(fwd.clone().multiplyScalar(1.5));
+  bolt.userData={vel:fwd.multiplyScalar(55),life:1.0,dmg:16};
+  const pl=new THREE.PointLight(char==='dragon'?0x00ffff:0xff00ff,2,6); bolt.add(pl);
+  scene.add(bolt); projectiles.push(bolt);
+}
+
+function boom(){
+  if(coolB>0||scrap<5){if(scrap<5)toast('Need 5 scrap');return}
+  coolB=1; scrap-=5; updateUI();
+  const fwd=getForward().clone(); fwd.y=.1; fwd.normalize();
+  const orb=new THREE.Mesh(new THREE.SphereGeometry(.4,10,10), new THREE.MeshBasicMaterial({color:0xff6600,transparent:true,opacity:.9}));
+  orb.position.copy(player.position); orb.position.y=1.5; orb.position.add(fwd.clone().multiplyScalar(2));
+  orb.userData={vel:fwd.multiplyScalar(22),life:2,boom:true,dmg:40};
+  orb.add(new THREE.PointLight(0xff6600,5,12));
+  scene.add(orb); projectiles.push(orb);
+}
+
+function douse(){
+  if(coolD>0) return; coolD=.6;
+  let n=0;
+  for(let i=fires.length-1;i>=0;i--){
+    if(player.position.distanceTo(fires[i].position)<(mount!=='foot'?14:5.5)){
+      spawnBurst(fires[i].position,0x44aaff,8);
+      scene.remove(fires[i]); fires.splice(i,1); manHP=Math.min(100,manHP+6); n++;
+    }
   }
+  if(n) markQ('defend');
+  toast(n?`💧 Doused ${n}`:'No fires in range'); updateUI();
 }
 
 function ability(){
-  if(coolF>0){toast('Recharging…');return}
-  coolF=2;
-  if(char==='dragon' || flying){
-    // frost
-    if(textures.frost_breath){
-      const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.frost_breath,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9}));
-      s.scale.set(5.5,3,1);
-      const d=new THREE.Vector3(); camera.getWorldDirection(d);
-      s.position.copy(controls.getObject().position).add(d.multiplyScalar(3.5));
+  if(coolA>0) return; coolA=2;
+  if(char==='dragon'){
+    if(textures.frost){
+      const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.frost,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+      s.scale.set(5,3,1); s.position.copy(player.position).add(getForward().multiplyScalar(3)); s.position.y=1.5;
       scene.add(s); setTimeout(()=>scene.remove(s),650);
     }
-    // clear fires + hit
-    const pos=player.position.clone(); pos.y=1.5;
-    for(let i=fires.length-1;i>=0;i--) if(pos.distanceTo(fires[i].position)<11){scene.remove(fires[i]);fires.splice(i,1);manHP=Math.min(100,manHP+5)}
-    hitFront(13,40); toast('❄️ Frost breath!'); beep(880,.12,'sine',.05);
+    const pos=player.position.clone();
+    hostiles.forEach(h=>{if(!h.userData.supp && h.position.distanceTo(pos)<12) h.userData.hp-=35});
+    toast('❄️ Frost breath');
   }else{
-    // panda suppress
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.suppress_drone||null,transparent:true,alphaTest:.1,depthWrite:false,color:textures.suppress_drone?0xffffff:0x00aaff}));
-    s.scale.set(1.3,1.3,1); s.position.copy(player.position); s.position.y=2.8;
-    s.userData={life:35, isSupp:true}; scene.add(s); drones.push(s);
-    toast('🚁 Suppress drone out'); beep(440,.1);
-  }
-  updateUI();
-}
-
-function hitFront(range,dmg){
-  const pos=controls.getObject().position.clone();
-  const d=new THREE.Vector3(); camera.getWorldDirection(d);
-  for(let i=drones.length-1;i>=0;i--){
-    const o=drones[i]; if(o.userData.isSupp) continue;
-    const to=o.position.clone().sub(pos); if(to.length()<range && to.normalize().dot(d)>.4){
-      o.userData.hp=(o.userData.hp||25)-dmg;
-      if(o.userData.hp<=0){scene.remove(o);drones.splice(i,1);tokens+=8;toast('+8 tokens');beep(600,.05)}
-    }
-  }
-  for(let i=enemies.length-1;i>=0;i--){
-    const o=enemies[i]; const to=o.position.clone().sub(pos);
-    if(to.length()<range+1 && to.normalize().dot(d)>.3){
-      o.userData.hp=(o.userData.hp||40)-dmg;
-      if(o.userData.hp<=0){scene.remove(o);enemies.splice(i,1);tokens+=12;toast('Arsonist down +12');beep(300,.08)}
-    }
+    toast('🛡️ Panda ward pulse'); ward++; readiness=Math.min(100,readiness+5); updateUI();
   }
 }
 
 function interact(){
-  const pos=player.position.clone(); pos.y=1.5;
-  // fires
-  for(let i=fires.length-1;i>=0;i--) if(pos.distanceTo(fires[i].position)<2.6){
-    scene.remove(fires[i]);fires.splice(i,1);manHP=Math.min(100,manHP+6);toast('🔥 Fire out +6');updateUI();beep(200,.06);return;
-  }
-  // items
-  for(let i=items.length-1;i>=0;i--){
-    const c=items[i]; if(pos.distanceTo(c.position)<2.4){
-      inventoryAdd(c.userData.key); scene.remove(c); items.splice(i,1);
-      toast('Collected '+c.userData.key); beep(700,.05); updateUI(); checkPhase(); return;
+  // NPCs
+  for(const n of npcs){
+    if(player.position.distanceTo(n.position)<4.2){
+      openDlg(n); return;
     }
   }
-  // Man
-  if(pos.distanceTo(theMan.position)<15){
-    if(phase==='burn'||(phase==='defend'&&enemies.length===0&&fires.length===0)){
-      openDlg('The Man','Ready for the final Burn?',[{l:'🔥 BURN THE MAN',a:finalBurn}]);
-    }else openDlg('The Man','Place ZPEGs, collect, then defend me from arsonists. Only then may we Burn.');
+  // Bench
+  if(player.position.distanceTo(new THREE.Vector3(14,0,12))<5){
+    if(scrap>=8){ scrap-=8; cloak++; ward++; jammer++; readiness=Math.min(100,readiness+20); markQ('craft'); toast('🛠️ Cloak · ward · jammer · +20 ready'); updateUI(); checkReady(); }
+    else toast('Need 8 scrap at the neon bench');
     return;
   }
-  // gens
-  for(const g of gens) if(pos.distanceTo(g.position)<3){
-    const p=Math.floor(g.userData.prod||0);
-    if(p<1){toast('Still charging…');return}
-    tokens+=p; g.userData.prod=0; toast('⚡ +'+p+' tokens'); updateUI(); beep(520,.08); return;
-  }
-  // stations
-  for(const inst of installations) if(inst.userData.station && pos.distanceTo(inst.position)<3.5){
-    if(inst.userData.station==='ZPEG') placeZpeg();
-    else if(inst.userData.station==='x402'){ if(tokens>=10){tokens-=10;const e=12+Math.floor(Math.random()*20);tokens+=e;toast('💰 x402 +'+e);updateUI()} else toast('Need 10 tokens')}
-    else toast(inst.userData.station+' online');
-    return;
-  }
-  // NPC
-  let near=null,md=5.5;
-  for(const n of npcs){const d=pos.distanceTo(n.position);if(d<md){md=d;near=n}}
-  if(near){
-    const u=near.userData;
-    const need=u.need&&Object.keys(u.need).length? '\n\n[Quest] Need: '+Object.entries(u.need).map(([k,v])=>v+'× '+k).join(', '):'';
-    const acts=[];
-    if(u.need && !u.done && Object.keys(u.need).length) acts.push({l:'Turn in',a:()=>turnIn(near)});
-    openDlg(u.name, u.t+need, acts);
-    return;
-  }
-  // car
-  if(pos.distanceTo(carGroup.position)<6){toggleDrive();return}
-  toast('Nothing nearby — collect glowies, talk, or approach The Man / car');
-}
-
-const inv = Object.create(null);
-function inventoryAdd(k){inv[k]=(inv[k]||0)+1}
-function inventoryHas(need){for(const[k,v]of Object.entries(need)) if((inv[k]||0)<v) return false; return true}
-function inventorySpend(need){for(const[k,v]of Object.entries(need)) inv[k]-=v}
-
-function turnIn(npc){
-  const u=npc.userData; if(u.done) return;
-  if(!inventoryHas(u.need)){toast('Missing items');return}
-  inventorySpend(u.need); u.done=true; questsDone++;
-  tokens+=u.rew||0; if(u.gift) inventoryAdd(u.gift);
-  toast('✅ Quest done +'+(u.rew||0)); closeDlg(); updateUI(); checkPhase(); beep(880,.1,'sine',.06);
-}
-
-function placeZpeg(){
-  if((inv['zpeg-kit']||0)<1){toast('Need ZPEG Kit (from quests)');return}
-  inv['zpeg-kit']--;
-  let g;
-  if(textures.zpeg){g=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.zpeg,transparent:true,alphaTest:.1,depthWrite:false}));g.scale.set(2.2,2.2,1)}
-  else g=new THREE.Mesh(new THREE.CylinderGeometry(1,1.2,2,8),new THREE.MeshStandardMaterial({color:0xffff00,emissive:0xffaa00,emissiveIntensity:.8}));
-  g.position.set(player.position.x+2.2,1.1,player.position.z);
-  g.userData={prod:0,rate:.2}; scene.add(g); gens.push(g); installations.push(g); zpegs++;
-  scene.add(new THREE.PointLight(0xffff00,3.5,16)).position.copy(g.position).y+=2.5;
-  toast('⚡ ZPEG placed'); updateUI(); checkPhase(); beep(400,.1);
-}
-
-function checkPhase(){
-  if(phase==='collect' && (zpegs>=1 || tokens>=50 || questsDone>=2)){
-    setPhase('drone'); spawnDrones(5); banner('PHASE 2: Rogue drones — F fly · R frost · Click attack');
-  }
-  if(phase==='drone' && drones.filter(d=>!d.userData.isSupp).length===0 && (tokens>=80||zpegs>=2||questsDone>=3)){
-    setPhase('defend'); document.getElementById('manbar').style.display='block';
-    spawnEnemies(4); banner('PHASE 3: DEFEND THE MAN — stomp fires · eliminate arsonists');
-  }
-  if(phase==='defend' && enemies.length===0 && fires.length===0 && manHP>15){
-    setPhase('burn'); banner('PHASE 4: THE BURN — Approach The Man');
+  // Man burn
+  if(player.position.distanceTo(theMan.position)<14){
+    if(readiness>=100 && manHP>20) finalBurn();
+    else toast(`Ready ${readiness}% · Man ${manHP|0} HP — keep defending & crafting`);
   }
 }
 
-function spawnDrones(n){
+function openDlg(n){
+  dlg=true; document.exitPointerLock?.();
+  document.getElementById('dlg').style.display='block';
+  document.getElementById('dn').textContent=n.userData.name;
+  const line=n.userData.lines[n.userData.li%n.userData.lines.length]; n.userData.li++;
+  document.getElementById('dt').textContent=line;
+  const opts=document.getElementById('do'); opts.innerHTML='';
+  const b1=document.createElement('button'); b1.textContent='Next tip'; b1.onclick=()=>{
+    document.getElementById('dt').textContent=n.userData.lines[n.userData.li%n.userData.lines.length]; n.userData.li++;
+  };
+  const b2=document.createElement('button'); b2.textContent='Thanks — +ready'; b2.onclick=()=>{
+    if(!crewTalked.has(n.userData.name)){
+      crewTalked.add(n.userData.name); readiness=Math.min(100,readiness+8); scrap+=3;
+      if(crewTalked.size>=3) markQ('npc');
+      updateUI(); checkReady();
+    }
+    closeDlg();
+  };
+  const b3=document.createElement('button'); b3.textContent='Close'; b3.onclick=closeDlg;
+  opts.append(b1,b2,b3);
+}
+
+function closeDlg(){dlg=false; document.getElementById('dlg').style.display='none'; if(playing) document.body.requestPointerLock?.()}
+
+function spawnBurst(pos,color,n=6){
   for(let i=0;i<n;i++){
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.rogue_drone||null,transparent:true,alphaTest:.1,depthWrite:false,color:textures.rogue_drone?0xffffff:0xff2200}));
+    const p=new THREE.Mesh(new THREE.SphereGeometry(.07,4,4),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.9}));
+    p.position.copy(pos); p.userData={vel:new THREE.Vector3((Math.random()-.5)*8,Math.random()*5,(Math.random()-.5)*8),life:.45};
+    scene.add(p); fx.push(p);
+  }
+}
+
+function spawnHostiles(n){
+  for(let i=0;i<n;i++){
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.rogue,transparent:true,alphaTest:.1,depthWrite:false}));
     s.scale.set(1.5,1.5,1);
-    const a=Math.random()*Math.PI*2,r=22+Math.random()*35;
-    s.position.set(Math.cos(a)*r,3.5+Math.random()*5,Math.sin(a)*r);
-    s.userData={hp:28,phase:Math.random()*Math.PI*2,spd:.018+Math.random()*.015}; scene.add(s); drones.push(s);
+    const a=Math.random()*Math.PI*2,r=30+Math.random()*40;
+    s.position.set(Math.cos(a)*r,3+Math.random()*6,Math.sin(a)*r);
+    s.userData={hp:28,spd:.012+Math.random()*0.018,phase:Math.random()*Math.PI*2,kindle:0};
+    scene.add(s); hostiles.push(s);
   }
-  toast(n+' rogue drones!');
 }
 
-function spawnEnemies(n){
+function spawnPickups(n){
   for(let i=0;i<n;i++){
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.npc_engineer||textures.npc_fox,transparent:true,alphaTest:.1,depthWrite:false,color:0xff6666}));
-    s.scale.set(1.9,2.9,1);
-    const a=Math.random()*Math.PI*2,r=35+Math.random()*25;
-    s.position.set(Math.cos(a)*r,1.5,Math.sin(a)*r);
-    s.userData={hp:42,ft:2+Math.random()*3,phase:Math.random()*Math.PI*2}; scene.add(s); enemies.push(s);
+    const m=new THREE.Mesh(new THREE.OctahedronGeometry(.35,0), new THREE.MeshStandardMaterial({color:NEON[i%NEON.length],emissive:NEON[i%NEON.length],emissiveIntensity:1,metalness:.8}));
+    const a=Math.random()*Math.PI*2,r=8+Math.random()*60;
+    m.position.set(Math.cos(a)*r,.55+Math.random()*2,Math.sin(a)*r);
+    m.userData={scrap:2+Math.floor(Math.random()*5),phase:Math.random()*Math.PI*2};
+    scene.add(m); pickups.push(m);
   }
-  toast(n+' arsonists!');
 }
 
 function spawnFire(){
-  if(fires.length>10) return;
-  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire_patch||null,transparent:true,alphaTest:.04,blending:THREE.AdditiveBlending,depthWrite:false,color:textures.fire_patch?0xffffff:0xff4400}));
+  if(fires.length>12) return;
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire,transparent:true,alphaTest:.04,blending:THREE.AdditiveBlending,depthWrite:false}));
   s.scale.set(2,2,1);
-  const a=Math.random()*Math.PI*2,r=3+Math.random()*9;
-  s.position.set(Math.cos(a)*r,.35,Math.sin(a)*r);
-  s.userData={phase:Math.random()*Math.PI*2}; scene.add(s); fires.push(s);
-  manHP=Math.max(0,manHP-3); updateUI();
+  const a=Math.random()*Math.PI*2,r=2+Math.random()*8;
+  s.position.set(Math.cos(a)*r,.4,Math.sin(a)*r);
+  scene.add(s); fires.push(s); manHP=Math.max(0,manHP-2.2); updateUI();
+  document.getElementById('manbar').style.display='block';
 }
 
 function finalBurn(){
-  closeDlg(); setPhase('complete');
-  for(let i=0;i<18;i++) setTimeout(()=>{
-    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire_patch||null,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,color:textures.fire_patch?0xffffff:0xff6600}));
-    s.scale.set(3+Math.random()*3,3+Math.random()*3,1);
-    s.position.set((Math.random()-.5)*7,2+Math.random()*16,(Math.random()-.5)*5);
+  phase='complete'; markQ('burn'); markQ('ready');
+  for(let i=0;i<24;i++) setTimeout(()=>{
+    const s=new THREE.Sprite(new THREE.SpriteMaterial({map:textures.fire,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+    s.scale.set(2.5+Math.random()*4,2.5+Math.random()*4,1);
+    s.position.set((Math.random()-.5)*6,2+Math.random()*14,(Math.random()-.5)*4);
     theMan.add(s);
-  },i*100);
-  theMan.add(new THREE.PointLight(0xff6600,22,90)).position.y=12;
-  tokens+=400; banner('🔥 THE BURN — Radical self-expression. Festival complete. +400 tokens');
-  toast('You lit The Man. Thank you for playing!'); updateUI(); beep(220,.3,'sine',.08);
+  },i*60);
+  theMan.add(new THREE.PointLight(0xff6600,30,100)).position.y=12;
+  scrap+=200; readiness=100; updateUI();
+  banner('🔥 THE BURN — Plaza complete');
+  setTimeout(()=>{ document.getElementById('win').style.display='flex'; document.exitPointerLock?.(); },2200);
 }
 
-function openDlg(name,text,acts=[]){
-  dlg=true; document.getElementById('dn').textContent=name; document.getElementById('dt').textContent=text;
-  const da=document.getElementById('da'); da.innerHTML='';
-  acts.forEach(a=>{const b=document.createElement('button');b.textContent=a.l;b.onclick=a.a;da.appendChild(b)});
-  document.getElementById('dlg').style.display='block'; controls.unlock();
+function checkReady(){
+  if(readiness>=100){ markQ('ready'); document.getElementById('manbar').style.display='block'; banner('READINESS 100% — approach The Man (E) to Burn'); phase='burn'; }
 }
-function closeDlg(){dlg=false; document.getElementById('dlg').style.display='none'}
 
 function updateUI(){
-  document.getElementById('tok').textContent=tokens.toLocaleString();
+  document.getElementById('scrap').textContent=scrap;
+  document.getElementById('kills').textContent=kills;
+  document.getElementById('ready').textContent=readiness+'%';
   document.getElementById('mf').style.width=manHP+'%';
+  document.getElementById('crew').textContent=crewTalked.size+'/5';
+  if(scrap>=5 && !questDone.has('collect')){ /* partial */ }
+  if(scrap>=10) markQ('collect');
 }
 
-// ========== ANIMATE ==========
-let fireT=0, arsonT=0;
+let fireT=0,spawnT=0;
 function animate(){
   requestAnimationFrame(animate);
   const dt=Math.min(clock.getDelta(),.05), t=clock.getElapsedTime();
-  if(coolF>0) coolF-=dt; if(coolA>0) coolA-=dt;
-  if(window.DPControls){ DPControls.tick();
-    // Xbox / remapped actions
-    if(DPControls.wasPressed('interact')) interact();
-    if(DPControls.wasPressed('fly')) toggleFly();
-    if(DPControls.wasPressed('drive')) toggleDrive();
+  coolS=Math.max(0,coolS-dt); coolB=Math.max(0,coolB-dt); coolD=Math.max(0,coolD-dt); coolA=Math.max(0,coolA-dt);
+
+  if(window.DPControls){
+    DPControls.tick();
+    if(DPControls.wasPressed('fly')) toggleDrone();
+    if(DPControls.wasPressed('drive')) toggleDragonFly();
     if(DPControls.wasPressed('ability')) ability();
-    if(DPControls.wasPressed('avatar1')) { setChar('dragon'); toast('🐉 DRAGON'); }
-    if(DPControls.wasPressed('avatar2')) { setChar('panda'); toast('🐼 CYBER PANDA'); }
-    if(DPControls.wasPressed('jump') && canJump && !flying){ vel.y=7.8; canJump=false; beep(200,.05); }
-    if(DPControls.isDown('shoot') && locked && !dlg && coolA<=0 && (phase==='drone'||phase==='defend')){ coolA=.4; hitFront(8,20); beep(900,.04); }
-    // look with right stick when pad connected
+    if(DPControls.wasPressed('boom')) boom();
+    if(DPControls.wasPressed('douse')) douse();
+    if(DPControls.wasPressed('interact')) interact();
+    if(DPControls.wasPressed('avatar1')) setChar('dragon');
+    if(DPControls.wasPressed('avatar2')) setChar('panda');
+    if(DPControls.isDown('shoot')) shoot();
     const ax=DPControls.getAxes();
-    if(DPControls.padConnected() && locked && !dlg){
-      const yaw = ax.rx * 2.2 * dt;
-      const pitch = ax.ry * 1.6 * dt;
-      controls.getObject().rotation.y -= yaw;
-      camera.rotation.x = Math.max(-1.2, Math.min(1.2, camera.rotation.x - pitch));
+    if(DPControls.padConnected()){
+      yaw -= ax.rx * 2.2 * dt;
+      pitch = Math.max(-.15, Math.min(.85, pitch - ax.ry * 1.6 * dt));
     }
   }
 
-  // Movement
-  if((locked||IS_MOBILE) && !dlg){
-    vel.x-=vel.x*9*dt; vel.z-=vel.z*9*dt;
-    if(!flying) vel.y-=17*dt; else vel.y-=vel.y*2.5*dt;
-
+  if(playing && !dlg){
+    // movement relative to camera yaw
     let mx=0,mz=0;
-    if(keys.KeyW||keys.ArrowUp) mz-=1; if(keys.KeyS||keys.ArrowDown) mz+=1;
-    if(keys.KeyA||keys.ArrowLeft) mx-=1; if(keys.KeyD||keys.ArrowRight) mx+=1;
-    if(IS_MOBILE && stickActive){mx+=stickV.x; mz+=stickV.y}
-    if(window.DPControls){ const mv=DPControls.getMoveVector(); if(Math.abs(mv.rawX)>0.15||Math.abs(mv.rawY)>0.15){ mx+=mv.rawX; mz+=mv.rawY; } }
+    if(keys.KeyW||keys.ArrowUp) mz-=1;
+    if(keys.KeyS||keys.ArrowDown) mz+=1;
+    if(keys.KeyA||keys.ArrowLeft) mx-=1;
+    if(keys.KeyD||keys.ArrowRight) mx+=1;
+    if(IS_MOBILE&&stickActive){mx+=stickV.x; mz+=stickV.y}
+    if(window.DPControls){const mv=DPControls.getMoveVector(); if(Math.abs(mv.rawX)>.12||Math.abs(mv.rawY)>.12){mx+=mv.rawX;mz+=mv.rawY}}
     const len=Math.hypot(mx,mz)||1; mx/=len; mz/=len;
 
-    if(driving){
-      // vehicle physics
-      const car=carGroup;
-      const turn = mx * 1.8 * dt;
-      car.userData.yaw -= turn;
-      car.rotation.y = car.userData.yaw;
-      const accel = -mz * 28 * dt; // forward is -Z in local? 
-      car.userData.speed += accel;
-      car.userData.speed *= (1-1.8*dt); // friction
-      car.userData.speed = Math.max(-12, Math.min(22, car.userData.speed));
-      car.position.x += Math.sin(car.userData.yaw) * car.userData.speed * dt;
-      car.position.z += Math.cos(car.userData.yaw) * car.userData.speed * dt;
-      // keep player/camera with car
-      player.position.copy(car.position);
-      controls.getObject().position.x = car.position.x;
-      controls.getObject().position.z = car.position.z;
-      controls.getObject().position.y = 2.2;
-      // slight camera follow yaw optional: keep free look
-    }else{
-      const spd = flying ? 62 : 42;
-      if(mx||mz){ vel.x -= mx * spd * dt; vel.z -= mz * spd * dt }
-      controls.moveRight(-vel.x*dt); controls.moveForward(-vel.z*dt);
-      if(flying){
-        controls.getObject().position.y += vel.y*dt;
-        if(controls.getObject().position.y<2){controls.getObject().position.y=2;vel.y=0}
-        if(controls.getObject().position.y>38){controls.getObject().position.y=38;vel.y=0}
-      }else{
-        controls.getObject().position.y += vel.y*dt;
-        if(controls.getObject().position.y<1.7){vel.y=0;controls.getObject().position.y=1.7;canJump=true}
-      }
-      player.position.x=controls.getObject().position.x;
-      player.position.z=controls.getObject().position.z;
-      player.position.y=flying?controls.getObject().position.y-1.4:0;
+    const fwd=getForward(), right=getRight();
+    let spd = mount==='car'?55 : mount==='drone'?48 : mount==='dragon'?42 : 28;
+    vel.x -= vel.x * 8 * dt; vel.z -= vel.z * 8 * dt;
+    if(mount==='foot'||mount==='car') vel.y -= 22*dt;
+    else vel.y -= vel.y * 2.5 * dt;
+
+    if(mx||mz){
+      const dir = right.clone().multiplyScalar(mx).add(fwd.clone().multiplyScalar(-mz));
+      dir.y=0; dir.normalize();
+      vel.x += dir.x * spd * dt * 8;
+      vel.z += dir.z * spd * dt * 8;
     }
-    if(pMesh) pMesh.visible = !locked || flying || !driving;
-  }else if(pMesh) pMesh.visible=true;
+    if((mount==='drone'||mount==='dragon') && (keys.Space)) vel.y += 18*dt;
+    if((mount==='drone'||mount==='dragon') && (keys.ControlLeft||keys.ControlRight)) vel.y -= 18*dt;
+    if(mount==='foot' && keys.Space && player.position.y<.15 && vel.y<=0) vel.y=9;
 
-  // Installations
-  installations.forEach(o=>{
-    if(o.userData.float){o.position.y=o.userData.baseY+Math.sin(t*1.2+o.userData.phase)*.65; o.rotation.y+=.008}
-    if(o.userData.isCar){o.userData.angle+=o.userData.speed*dt; o.position.x=Math.cos(o.userData.angle)*o.userData.radius; o.position.z=Math.sin(o.userData.angle)*o.userData.radius; o.rotation.y=o.userData.angle+Math.PI/2}
-  });
-  // Man rings
-  theMan.children.forEach(c=>{ if(c.geometry?.type==='TorusGeometry') c.rotation.z=t*(.25+c.position.y*.01)});
+    player.position.x += vel.x * dt;
+    player.position.z += vel.z * dt;
+    player.position.y += vel.y * dt;
 
-  npcs.forEach(n=>n.position.y=1.5+Math.sin(t*1.8+n.userData.phase)*.09);
-  items.forEach(c=>{c.position.y=.7+Math.sin(t*2.2+c.userData.phase)*.25; if(c.rotation) c.rotation.y+=.02});
-  gens.forEach(g=>{g.userData.prod=(g.userData.prod||0)+g.userData.rate*dt});
-
-  // Rogue drones (non-suppress)
-  drones.forEach(d=>{
-    if(d.userData.isSupp){
-      d.userData.life-=dt; d.position.y=2.4+Math.sin(t*3)*.35;
-      if(d.userData.life<=0){scene.remove(d); return}
-      if(fires.length){
-        const f=fires[0]; const dir=f.position.clone().sub(d.position); dir.y=0;
-        if(dir.length()<2.2){scene.remove(f);fires.shift();manHP=Math.min(100,manHP+5);toast('🚁 Fire out');updateUI()}
-        else{dir.normalize().multiplyScalar(7*dt); d.position.x+=dir.x; d.position.z+=dir.z}
-      }
+    if(mount==='foot'||mount==='car'){
+      if(player.position.y<0){player.position.y=0;vel.y=0}
     }else{
-      d.position.y=3.5+Math.sin(t*2+d.userData.phase)*1.3;
-      const to=player.position.clone().sub(d.position); if(to.length()>2.5){to.normalize().multiplyScalar(d.userData.spd*55*dt); d.position.x+=to.x; d.position.z+=to.z}
+      if(player.position.y<1.2){player.position.y=1.2;vel.y=0}
+      if(player.position.y>40){player.position.y=40;vel.y=0}
     }
-  });
-  drones = drones.filter(d=>d.parent);
+    // soft arena bound
+    const r=Math.hypot(player.position.x,player.position.z);
+    if(r>95){player.position.x*=95/r; player.position.z*=95/r}
 
-  // Enemies
-  if(phase==='defend'){
-    arsonT+=dt; if(arsonT>5 && enemies.length<6){arsonT=0; spawnEnemies(1)}
-    fireT+=dt; if(fireT>2.2){fireT=0; spawnFire()}
-    enemies.forEach(e=>{
-      e.position.y=1.5+Math.sin(t*2+e.userData.phase)*.08;
-      const to=theMan.position.clone().sub(e.position); to.y=0;
-      if(to.length()>8){to.normalize().multiplyScalar(3.2*dt); e.position.x+=to.x; e.position.z+=to.z}
-      else {e.userData.ft-=dt; if(e.userData.ft<=0){e.userData.ft=3+Math.random()*2; spawnFire()}}
-    });
+    // mount visuals
+    if(mount==='drone'){
+      dronePark.position.copy(player.position); dronePark.position.y = player.position.y + 0.2;
+      if(pMesh){pMesh.position.y=.4; pMesh.scale.set(1.6,2.4,1)}
+    }else if(mount==='dragon'){
+      dronePark.position.set(8,1.5,18);
+      if(pMesh){pMesh.position.y=2.2; pMesh.scale.set(3.2,4.6,1)}
+    }else if(mount==='car'){
+      car.position.copy(player.position); car.position.y=1.5;
+      if(pMesh){pMesh.position.y=1.2; pMesh.scale.set(1.8,2.6,1)}
+    }else{
+      dronePark.position.set(8,1.5,18);
+      if(pMesh){pMesh.position.y=2.05; pMesh.scale.set(char==='dragon'?2.8:2.5, char==='dragon'?4.1:3.7,1)}
+    }
+
+    if(pointerDown||keys.Mouse0) shoot();
   }
 
-  // Dust drift
-  if(dust){
-    const a=dust.geometry.attributes.position.array;
-    for(let i=0;i<a.length;i+=3){a[i]+=Math.sin(t+i)*.008; a[i+2]+=Math.cos(t+i*.4)*.006; if(a[i]>90)a[i]=-90; if(a[i+2]>90)a[i+2]=-90}
-    dust.geometry.attributes.position.needsUpdate=true;
+  // Third-person camera behind player
+  const camDist = mount==='drone'?9 : mount==='dragon'?10 : mount==='car'?8 : 6.5;
+  const camH = mount!=='foot'?2.4 : 2.0;
+  const target = player.position.clone(); target.y += 1.4;
+  const ox = Math.sin(yaw)*camDist;
+  const oz = Math.cos(yaw)*camDist;
+  const oy = Math.sin(pitch)*camDist*0.9 + camH;
+  camera.position.lerp(new THREE.Vector3(target.x+ox, target.y+oy, target.z+oz), 0.18);
+  camera.lookAt(target);
+
+  // Projectiles
+  for(let i=projectiles.length-1;i>=0;i--){
+    const p=projectiles[i];
+    p.position.add(p.userData.vel.clone().multiplyScalar(dt));
+    p.userData.life-=dt;
+    if(p.userData.life<=0){scene.remove(p);projectiles.splice(i,1);continue}
+    for(let j=hostiles.length-1;j>=0;j--){
+      const h=hostiles[j];
+      if(p.position.distanceTo(h.position)<(p.userData.boom?4.2:1.25)){
+        h.userData.hp-=p.userData.dmg;
+        if(p.userData.boom){hostiles.forEach(o=>{if(o.position.distanceTo(p.position)<5)o.userData.hp-=20});spawnBurst(p.position,0xff6600,12)}
+        else spawnBurst(p.position,char==='dragon'?0x00ffff:0xff00ff,4);
+        scene.remove(p); projectiles.splice(i,1);
+        if(h.userData.hp<=0){
+          spawnBurst(h.position,0xff00ff,10); scene.remove(h); hostiles.splice(j,1);
+          kills++; scrap+=8; readiness=Math.min(100,readiness+3); markQ('defend'); updateUI(); checkReady();
+        }
+        break;
+      }
+    }
   }
 
-  // Attack on click (desktop)
-  if(keys.Mouse0 && locked && !dlg && coolA<=0 && (phase==='drone'||phase==='defend')){
-    coolA=.4; hitFront(8,20); beep(900,.04);
+  for(let i=fx.length-1;i>=0;i--){
+    const p=fx[i]; p.position.add(p.userData.vel.clone().multiplyScalar(dt)); p.userData.vel.y-=12*dt; p.userData.life-=dt;
+    p.material.opacity=Math.max(0,p.userData.life*2); if(p.userData.life<=0){scene.remove(p);fx.splice(i,1)}
   }
 
-  renderer.render(scene, camera);
+  // Hostiles
+  for(const h of hostiles){
+    h.position.y=3+Math.sin(t*2+h.userData.phase)*1.2;
+    const to=theMan.position.clone().sub(h.position); to.y=0;
+    if(to.length()>10){to.normalize().multiplyScalar(h.userData.spd*50*dt); h.position.x+=to.x; h.position.z+=to.z}
+    else{h.userData.kindle=(h.userData.kindle||0)+dt; if(h.userData.kindle>3.5){h.userData.kindle=0;spawnFire()}}
+  }
+
+  // Pickups
+  for(let i=pickups.length-1;i>=0;i--){
+    const p=pickups[i]; p.rotation.y+=dt*2; p.position.y=.5+Math.sin(t*2.5+p.userData.phase)*.2;
+    if(player.position.distanceTo(p.position)<2.2){
+      scrap+=p.userData.scrap; spawnBurst(p.position,0xffff00,5); scene.remove(p); pickups.splice(i,1); updateUI();
+      if(scrap>=10) markQ('collect');
+    }
+  }
+
+  // NPC bob
+  npcs.forEach((n,i)=>{n.position.y=1.4+Math.sin(t*1.5+i)*.12});
+
+  rings.forEach(r=>{if(r.userData.spin)r.rotation.z+=r.userData.spin*dt});
+  if(manSprite) manSprite.material.opacity=.82+Math.sin(t*2)*.12;
+
+  fireT+=dt; if(fireT>3.5 && phase!=='complete'){fireT=0; if(hostiles.length) spawnFire()}
+  spawnT+=dt; if(spawnT>8 && hostiles.length<8 && phase!=='complete'){spawnT=0; spawnHostiles(2)}
+  if(readiness>=55) document.getElementById('manbar').style.display='block';
+
+  // idle title camera orbit
+  if(!playing){
+    camera.position.set(Math.sin(t*.15)*28, 12, Math.cos(t*.15)*28);
+    camera.lookAt(0,8,0);
+  }
+
+  renderer.render(scene,camera);
 }
 
-function onResize(){
-  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth,innerHeight);
-}
-
-// Click attack helper
-document.addEventListener('mousedown', e=>{ if(e.button===0) keys.Mouse0=true });
-document.addEventListener('mouseup', e=>{ if(e.button===0) keys.Mouse0=false });
-
-init().catch(e=>{console.error(e); document.getElementById('load').innerHTML='<div style="color:#f66">Load failed — check console</div>'});
+init().catch(e=>{console.error(e);document.getElementById('load').innerHTML='<div style="color:#f66">Load failed</div>'});
 </script>
 </body>
 </html>

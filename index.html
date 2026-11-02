@@ -13,7 +13,7 @@
 <header class="hub-header">
   <h1>DRAGON & PANDA</h1>
   <p>Unified showcase — Cyberpunk Burning Man ground festival + Drone void-shooter arena.<br>
-  Updated builds · shared control customizer (keyboard + Xbox) · feature-stop tutorials · verified sprites.</p>
+  Full vision live · third-person plaza · drone void arena · Xbox · feature tutorials · play now.</p>
 </header>
 <nav class="hub-nav">
   <a href="#play" class="on">Play</a>
@@ -25,27 +25,37 @@
 </nav>
 <main class="hub-main">
   <section class="section" id="play">
-    <h2>Play modes</h2>
+    <h2>▶ Play now — full vision</h2>
+    <p style="color:#bdf;text-align:center;margin:-4px 0 18px;font-size:.95rem">Third-person neon plaza · mounts · defend → burn · void drone arena · Xbox · looks like the tutorials</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:22px">
+      <a class="btn btn-primary" href="play/ground.html" style="font-size:1.15rem;padding:14px 28px">▶ PLAY PLAZA (3rd person)</a>
+      <a class="btn btn-primary" href="play/drone.html" style="font-size:1.05rem;padding:14px 24px;background:linear-gradient(90deg,#5010a0,#0a6080)">🚁 DRONE ARENA LIT</a>
+    </div>
     <div class="grid">
       <article class="card-mode">
-        <h3>🏜️ Plaza LIT — Burning Man</h3>
-        <p>Collect neon shards · NPC quests · ZPEG generators · fly & frost · defend The Man · final Burn. Cyber car mount. First/third hybrid roam.</p>
-        <div class="meta">LIT look · new Man · HD cyber avatars · Xbox · Collect → Drone → Defend → Burn</div>
+        <h3>🏜️ Plaza LIT — Third-Person</h3>
+        <p>Camera locked behind Dragon/Panda. Collect scrap · talk to DRAKE/PIX/STRYPE/NOVA/LIN · mount drone (F) or dragon (V) · cyber car · defend Man · Burn at 100% readiness.</p>
+        <div class="meta">Full showcase vision · mission checklist · HD avatars · Xbox</div>
         <div class="actions">
-          <a class="btn btn-primary" href="play/ground.html">Play Ground</a>
-          <a class="btn btn-ghost" href="#tut-ground">Watch tutorial</a>
+          <a class="btn btn-primary" href="play/ground.html">Enter Playa</a>
+          <a class="btn btn-ghost" href="#tut-ground">Tutorial video</a>
         </div>
       </article>
       <article class="card-mode">
-        <h3>🚁 Drone Arena LIT — Void Shooter</h3>
-        <p>Mount drone · third-person aerial combat · pulse gun · boom orbs · douse fires · craft cloak/ward/jammer · defend then burn The Man.</p>
-        <div class="meta">LIT void arena · cinematic craft · Xbox · scrap · readiness 100% → Burn</div>
+        <h3>🚁 Drone Arena LIT</h3>
+        <p>Cinematic void · purple void-craft · pulse + boom · douse · craft bench · readiness → Burn. Pure aerial shooter layer.</p>
+        <div class="meta">Tutorial look · thrusters · Xbox remappable</div>
         <div class="actions">
-          <a class="btn btn-primary" href="play/drone.html">Play Drone Arena</a>
-          <a class="btn btn-ghost" href="#tut-drone">Watch tutorial</a>
+          <a class="btn btn-primary" href="play/drone.html">Mount Up</a>
+          <a class="btn btn-ghost" href="#tut-drone">Tutorial video</a>
         </div>
       </article>
     </div>
+    <ol style="color:#9cf;font-size:.85rem;max-width:720px;margin:20px auto 0;line-height:1.55">
+      <li>Start <b>Plaza</b> → pick avatar → click canvas for mouse look</li>
+      <li>Collect glows · talk to 3+ crew (E) · mount F/V · clear hostiles · craft (8 scrap)</li>
+      <li>Readiness 100% → E at The Man → Burn → then try <b>Drone Arena</b></li>
+    </ol>
   </section>
 
   <section class="section" id="tutorials">
@@ -114,7 +124,7 @@
     <h2>Updated versions in this hub</h2>
     <div class="ver-list">
       <div class="ver-item"><span><b>Hub landing</b> — merged entry + tutorials + mapper</span><code>index.html</code></div>
-      <div class="ver-item"><span><b>Ground v2+</b> — Burning Man + Xbox + HD cyber panda/car</span><a href="play/ground.html">play/ground.html</a></div>
+      <div class="ver-item"><span><b>Plaza LIT TPS</b> — third-person · mounts · crew · burn loop</span><a href="play/ground.html">play/ground.html</a></div>
       <div class="ver-item"><span><b>Drone Arena</b> — void-shooter TPS merge</span><a href="play/drone.html">play/drone.html</a></div>
       <div class="ver-item"><span><b>Shared controls</b> — remapper Gamepad API</span><code>js/controls.js</code></div>
       <div class="ver-item"><span><b>Legacy</b> phases / omega / hd (archive in cyberpunk-burning-man-game/)</span><span style="color:#668">unchanged</span></div>
@@ -179,11 +189,9 @@ updatePad();
 // Asset verification
 async function verifyAssets() {
   const files = [
-    'assets/panda.png','assets/dragon.png','assets/dragon_hd.png','assets/car.png',
-    'assets/rogue_drone.png','assets/suppress_drone.png','assets/fire_patch.png',
-    'assets/frost_breath.png','assets/ground.jpg','assets/zpeg.png',
-    'assets/npc_shaman.png','assets/npc_fox.png','assets/npc_pilot.png',
-    'assets/item_shard.png','assets/item_spark.png',
+    'assets/panda_v3.png','assets/dragon_v3.png','assets/the_man_sprite.png','assets/drone_mount.png','assets/car.png',
+    'assets/rogue_drone.png','assets/fire_patch.png','assets/frost_breath.png',
+    'assets/npc_shaman_hd.png','assets/npc_fox_hd.png','assets/npc_pilot.png',
     'videos/tutorial-ground.mp4','videos/tutorial-drone.mp4',
     'js/controls.js','play/ground.html','play/drone.html'
   ];
